@@ -1,5 +1,7 @@
-from . import views
 from django.urls import path
-urlpatterns= [
-    path('appCloth/', views.fun1)
+from . import views
+
+urlpatterns = [
+   
+    path('login/', views.login_view, name='login'),
 ]
