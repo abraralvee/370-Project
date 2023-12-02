@@ -5,20 +5,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STYLEswap</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
     <style>
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(160, 64, 244);
+            background-color: rgb(167, 233, 224) ; 
+        }
+        #slogan {
+            font-size: 22px;
+            margin-top: 1px;
+            color: rgba(124, 29, 61, 0.91); 
+        
         }
 
         header {
-            background-color: #333;
-            color: #fff;;
+            background-color: rgba(240, 188, 205, 0.91);
+            color: rgba(228, 59, 115, 0.91);
             text-align: center;
             padding: 1em;
-            font-size: 24px;
+            font-size: 28px; 
+            font-family: 'Quicksand', sans-serif; 
         }
 
         .container {
@@ -32,12 +40,13 @@
             width: 200px;
             padding: 20px;
             margin: 20px;
-            background-color: #fff;
+            background-color:rgba(58, 231, 231, 0.91);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s ease-in-out;
-            border-color: rgb(160, 64, 244);
+            border-color: rgba(228, 59, 115, 0.91); /* Darker border color */
+            color: rgba(12, 51, 51, 0.91); /* Darker text color */
         }
 
         .login-box:hover {
@@ -47,15 +56,16 @@
 </head>
 <body>
     <header>
-        Styleswap
+        <h1>StyleSwap</h1>
+        <div id="slogan">Rent it, Rock it, Return it</div>
     </header>
 
     <div class="container">
-        <div class="login-box" onclick="location.href='login/'">
+        <div class="login-box" onclick="location.href='Renter-login/'">
             Renter Login
         </div>
 
-        <div class="login-box" onclick="location.href='login/'">
+        <div class="login-box" onclick="location.href='Rentee-login/'">
             Rentee Login
         </div>
 
