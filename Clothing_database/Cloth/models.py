@@ -9,17 +9,20 @@ class User(models.Model):
 
 class Renter(models.Model):
     User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
-    Rating = models.DecimalField(max_digits=5, decimal_places=2, null=True)
+    SSN= models.IntegerField(primary_key=True)
+    Rating = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     Address = models.CharField(max_length=80)
     Email = models.CharField(max_length=30)
 
 class Rentee(models.Model):
     User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
+    NID= models.IntegerField(primary_key=True)
     Shipping_address = models.CharField(max_length=80)
     Email = models.CharField(max_length=30)
 
 class Delivery_person(models.Model):
     User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
+    Serial_ID= models.IntegerField(primary_key=True)
 
 class Review(models.Model):
     Serial_no = models.ForeignKey('ClothingItem', on_delete=models.CASCADE, to_field='Serial_no')
@@ -35,16 +38,15 @@ class ClothingItem(models.Model):
     Gender = models.CharField(max_length=10)
     Image = models.CharField(max_length=50, null=True)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
+    Rating = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     Reviews = models.ManyToManyField(Review, related_name='clothing_items')
 
 class Cart(models.Model):
-    User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
+    Cart_number = models.IntegerField(primary_key=True)
     Voucher = models.CharField(max_length=10)
-    Total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     Daily_charge= models.DecimalField(max_digits=10, decimal_places=2)
     Delivery_charge = models.DecimalField(max_digits=10, decimal_places=2)
     Duration = models.DurationField()
-    Cart_number = models.DecimalField(max_digits=10, decimal_places=2)
     Product_price = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Transaction(models.Model):
