@@ -2,10 +2,17 @@ from django.db import models
 
 # Create your models here.
 class User(models.Model):
+    ROLE_CHOICES = [
+        ('01', 'Rentee'),
+        ('02', 'Renter'),
+        ('03', 'Delivery Person'),
+    ]
+
     User_ID = models.CharField(max_length=10, primary_key=True)
     First_name = models.CharField(max_length=50)
     Last_name = models.CharField(max_length=50)
-    Phone_number= models.CharField(max_length=15)
+    Phone_number = models.CharField(max_length=15)
+    Role = models.CharField(max_length=2, choices=ROLE_CHOICES)
 
 class Renter(models.Model):
     User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')

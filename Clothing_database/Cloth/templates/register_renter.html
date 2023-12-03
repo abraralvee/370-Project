@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renter Registration</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgb(167, 233, 224);
+        }
+
+        .wrapper {
+            position: relative;
+            max-width: 400px;
+            width: 100%;
+            background: #fff;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .wrapper h2 {
+            position: relative;
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .wrapper h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 24px;
+            border-radius: 10px;
+            background: rgba(58, 231, 231, 0.91);
+        }
+
+        .wrapper form {
+            margin-top: 25px;
+        }
+
+        .wrapper form .input-box {
+            height: 45px;
+            margin: 12px 0;
+        }
+
+        form .input-box input {
+            height: 100%;
+            width: calc(100% - 30px);
+            outline: none;
+            padding: 0 13px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #333;
+            border: 1.4px solid #C7BEBE;
+            border-bottom-width: 2.5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .input-box input:focus,
+        .input-box input:valid {
+            border-color: rgba(58, 231, 231, 0.91);
+        }
+
+        form .policy {
+            display: flex;
+            align-items: center;
+        }
+
+        form h3 {
+            color: #707070;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 9px;
+        }
+
+        .input-box.button input {
+            color: #333;
+            letter-spacing: 1px;
+            border: none;
+            background: rgba(58, 231, 231, 0.91);
+            cursor: pointer;
+        }
+
+        .input-box.button input:hover {
+            background: rgba(58, 231, 231, 0.91);
+        }
+
+        form .text h3 {
+            color: #333;
+            width: 100%;
+            text-align: center;
+        }
+
+        form .text h3 a {
+            color: rgba(58, 231, 231, 0.91);
+            text-decoration: none;
+        }
+
+        form .text h3 a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        function togglePasswordVisibility(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+        }
+    </script>
+    <div class="wrapper">
+        <h2>Renter Registration</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="input-box">
+                <input type="text" name="first_name" placeholder="Enter your First name" required>
+            </div>
+            <div class="input-box">
+                <input type="text" name="last_name" placeholder="Enter your Last name" required>
+            </div>
+            <div class="input-box">
+                <input type="text" name="address" placeholder="Enter your Address" required>
+            </div>
+            <div class="input-box">
+                <input type="text" name="ssn" placeholder="Enter your SSN number" required>
+            </div>
+            <div class="input-box">
+                <input type="tel" name="phone_number" placeholder="Enter your Phone number" required>
+            </div>
+            <div class="input-box">
+                <input type="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="input-box">
+                <input type="password" id="password" name="password" placeholder="Create password" required>
+                <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+            </div>
+            <div class="input-box">
+                <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm password" required>
+                <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
+            </div>
+            <div class="policy">
+                <input type="checkbox" required>
+                <h3>I accept all terms & condition</h3>
+            </div>
+            <div class="input-box button">
+                <input type="submit" value="Register Now">
+            </div>
+            <div class="text">
+                <h3>Already have an account? <a href="#">Login now</a></h3>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
