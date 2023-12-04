@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renter Dashboard</title>
+    <!-- Add your stylesheets and scripts here -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Renter Dashboard</h1>
+    </header>
+
+    <nav>
+        <a href="#profile">Profile</a> |
+        <a href="#rented-items">Rented Items</a> |
+        <a href="#history">Rental History</a> |
+        <a href="#notifications">Notifications</a>
+    </nav>
+
+    <section id="profile">
+        <h2>Profile</h2>
+        <div class="item">
+            <!-- Display Renter's profile information -->
+            <p>Name: John Doe</p>
+            <p>Email: john@example.com</p>
+            <p>Phone: +1234567890</p>
+            <p>Address: 123 Street, City</p>
+        </div>
+        <a href="#edit-profile" class="button">Edit Profile</a>
+    </section>
+
+    <section id="rented-items">
+        <h2>Rented Items</h2>
+        <!-- Display a list of items currently rented by the Renter -->
+        <div class="item">
+            <p>Item Name: Red Party Dress</p>
+            <p>Size: M</p>
+            <p>Rental Period: 7 days</p>
+            <p>Return By: 2023-12-31</p>
+            <a href="#return-item" class="button">Return Item</a>
+        </div>
+        <!-- Add more rented items as needed -->
+    </section>
+
+    <section id="history">
+        <h2>Rental History</h2>
+        <!-- Display a list of past rented items and their details -->
+        <div class="item">
+            <p>Item Name: Blue Casual Shirt</p>
+            <p>Size: L</p>
+            <p>Rental Period: 5 days</p>
+            <p>Rental Date: 2023-12-15</p>
+            <p>Return Date: 2023-12-20</p>
+        </div>
+        <!-- Add more rental history items as needed -->
+    </section>
+
+    <section id="notifications">
+        <h2>Notifications</h2>
+        <!-- Display any notifications or alerts for the Renter -->
+        <div class="item">
+            <p><strong>Reminder:</strong> Your rental item "Red Party Dress" is due for return tomorrow.</p>
+        </div>
+        <!-- Add more notifications as needed -->
+    </section>
+</body>
+
+</html>
