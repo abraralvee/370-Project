@@ -1,6 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from .forms import RenteeRegistrationForm, RenterRegistrationForm, DeliveryPersonRegistrationForm
 from django.db import connection
@@ -26,32 +25,42 @@ def register_rentee(request):
 
 def register_renter(request):
     if request.method == "POST":
-        form = RenterRegistrationForm(request.POST)
+        first_name = request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        address = request.POST['address']
+        phone = request.POST['phone_number']
+        password1 = request.POST['password']
+        password2 = request.POST['confirm_password']
+        SSN = request.POST['ssn']
+        user_id= '01'+ str(SSN)
+        Rating= None
+        password = None
+        print(user_id, first_name, last_name, password, phone)
 
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.Role = '02'
-            user.save()
-
-            # Now you can access user attributes like user.user_id, user.first_name, etc.
-
-            insert_renter = """
-                INSERT INTO Renter (user_id, SSN, Rating, address, email)
-                VALUES (%s, %s, %s, %s, %s)
-            """
-
-            with connection.cursor() as cursor:
-                cursor.execute(insert_renter, (user.user_id, form.cleaned_data['SSN'], None, form.cleaned_data['address'], form.cleaned_data['email']))
-            print(SSN)
-            messages.success(request, 'Signup Successful')
-            return redirect('../')  # Redirect to the user's profile page or any other desired page
+        if password1==password2:
+            password = password1
         else:
-            messages.warning(request, 'Please fix the errors in the form.')
-
-    else:
-        form = RenterRegistrationForm()
-
-    return render(request, 'register_renter.html', {'form': form})
+            messages.warning(request, "Please retype the password properly")
+            return redirect('../register_renter.html/')
+    
+        data = {
+            'user_id': user_id,
+            'user_name' : first_name + last_name,
+            'user_email': email,
+            'user_address': address
+        }
+        insert_user = 'insert into cloth_user (user_id, first_name, last_name, password, phone_number) values (%s, %s,%s, %s, %s)'
+        insert_renter = 'insert into cloth_renter ( SSN, Rating, address, email) values ( %s, %s, %s, %s) '
+        with connection.cursor() as cursor:
+            
+            cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
+            cursor.execute(insert_renter, (user_id, SSN, Rating, address ,email))
+        print(user_id,SSN)
+        messages.success(request, 'Signup Successful')
+        return render(request, 'user.html', data)
+    # print(user_id, first_name, last_name, password, phone)
+    return render(request, 'register_renter.html')
 
 def register_delivery_person(request):
     if request.method == 'POST':
