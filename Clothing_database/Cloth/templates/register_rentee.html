@@ -118,50 +118,54 @@
   </style>
 </head>
 <body>
-    <script>
-        function togglePasswordVisibility(inputId) {
+  <script>
+      function togglePasswordVisibility(inputId) {
           const passwordInput = document.getElementById(inputId);
           const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
           passwordInput.setAttribute('type', type);
-        }
-      </script>
-  <div class="wrapper">
-    <h2>Rentee Registration</h2>
-    <form action="#">
-      <div class="input-box">
-        <input type="text" placeholder="Enter your name" required>
-      </div>
-      <div class="input-box">
-        <input type="text" placeholder="Enter your Shipping Address" required>
-      </div>
-      <div class="input-box">
-        <input type="text" placeholder="Enter your NID number" required>
-      </div>
-      <div class="input-box">
-        <input type="tel" placeholder="Enter your Phone number" required>
-      </div>
-      <div class="input-box">
-        <input type="email" placeholder="Enter your email" required>
-      </div>
-      <div class="input-box">
-        <input type="password" id="password" placeholder="Create password" required>
-        <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
-      </div>
-      <div class="input-box">
-        <input type="password" id="confirmPassword" placeholder="Confirm password" required>
-        <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
-      </div>
-      <div class="policy">
-        <input type="checkbox">
-        <h3>I accept all terms & condition</h3>
-      </div>
-      <div class="input-box button">
-        <input type="Submit" value="Register Now">
-      </div>
-      <div class="text">
-        <h3>Already have an account? <a href="#">Login now</a></h3>
-      </div>
-    </form>
+      }
+  </script>
+    <div class="wrapper">
+        <h2>Rentee Registration</h2>
+      <form action='../register_rentee/' method="POST">
+          {% csrf_token %}
+          <div class="input-box">
+              <input type="text" name="first_name" placeholder="Enter your First name" required>
+          </div>
+          <div class="input-box">
+              <input type="text" name="last_name" placeholder="Enter your Last name" required>
+          </div>
+          <div class="input-box">
+              <input type="text" name="address" placeholder="Enter your Shipping Address" required>
+          </div>
+          <div class="input-box">
+              <input type="text" name="nid" placeholder="Enter your NID number" required>
+          </div>
+          <div class="input-box">
+              <input type="tel" name="phone_number" placeholder="Enter your Phone number" required>
+          </div>
+          <div class="input-box">
+              <input type="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="input-box">
+              <input type="password" id="password" name="password" placeholder="Create password" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility('password')">👁️</span>
+          </div>
+          <div class="input-box">
+              <input type="password" id="confirmPassword" name="confirm_password" placeholder="Confirm password" required>
+              <span class="toggle-password" onclick="togglePasswordVisibility('confirmPassword')">👁️</span>
+          </div>
+          <div class="policy">
+              <input type="checkbox" required>
+              <h3>I accept all terms & condition</h3>
+          </div>
+          <div class="input-box button">
+              <input type="submit" value="Register Now">
+          </div>
+          <div class="text">
+              <h3>Already have an account? <a href="../login/">Login now</a></h3>
+          </div>
+      </form>
   </div>
 </body>
 </html>

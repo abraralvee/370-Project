@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renter Dashboard</title>
+    <title>Rentee Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
     <style>
         body {
@@ -64,18 +64,33 @@
         .button:hover {
             background-color: rgba(56, 142, 60, 0.91);
         }
+
+        .cart {
+            background-color: rgba(255, 152, 0, 0.91);
+            color: rgba(255, 255, 255, 0.91);
+            padding: 10px 15px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .cart:hover {
+            background-color: rgba(230, 81, 0, 0.91);
+        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Renter Dashboard</h1>
+        <h1>Rentee Dashboard</h1>
     </header>
 
     <nav>
         <a href="#profile">Profile</a>
         <span>|</span>
-        <a href="#rented-items">Rented Items</a>
+        <a href="#browse-clothes">Browse Clothes</a>
+        <span>|</span>
+        <a href="#cart">Cart</a>
         <span>|</span>
         <a href="#history">Rental History</a>
         <span>|</span>
@@ -85,26 +100,41 @@
     <section id="profile">
         <h2>Profile</h2>
         <div class="item">
-            <!-- Display Renter's profile information -->
+            <!-- Display Rentee's profile information -->
             <p>Name: {{user_name}}</p>
             <p>Email: {{user_email}}</p>
             <p>UserID: {{user_id}}</p>
-            <p>Address: {{user_address}}</p>
+            <p>Shipping Address: {{user_address}}</p>
         </div>
         <a href="#edit-profile" class="button">Edit Profile</a>
     </section>
 
-    <section id="rented-items">
-        <h2>Rented Items</h2>
-        <!-- Display a list of items currently rented by the Renter -->
+    <section id="browse-clothes">
+        <h2>Browse Clothes</h2>
+        <!-- Display a list of available clothes with Add to Cart button -->
+        <div class="item">
+            <p>Item Name: Red Party Dress</p>
+            <p>Size: M</p>
+            <p>Condition: New</p>
+            <p>Category: Party Wear</p>
+            <p>Price: $20/day</p>
+            <button class="cart">Add to Cart</button>
+        </div>
+        <!-- Add more clothes as needed -->
+    </section>
+
+    <section id="cart">
+        <h2>Cart</h2>
+        <!-- Display items added to the cart with options for removal and checkout -->
         <div class="item">
             <p>Item Name: Red Party Dress</p>
             <p>Size: M</p>
             <p>Rental Period: 7 days</p>
-            <p>Return By: 2023-12-31</p>
-            <a href="#return-item" class="button">Return Item</a>
+            <p>Total: $140</p>
+            <button class="cart">Remove</button>
         </div>
-        <!-- Add more rented items as needed -->
+        <!-- Add more cart items as needed -->
+        <button class="cart">Checkout</button>
     </section>
 
     <section id="history">
@@ -122,7 +152,7 @@
 
     <section id="notifications">
         <h2>Notifications</h2>
-        <!-- Display any notifications or alerts for the Renter -->
+        <!-- Display any notifications or alerts for the Rentee -->
         <div class="item">
             <p><strong>Reminder:</strong> Your rental item "Red Party Dress" is due for return tomorrow.</p>
         </div>
