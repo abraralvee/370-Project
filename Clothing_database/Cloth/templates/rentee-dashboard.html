@@ -25,11 +25,25 @@
 
         nav {
             background-color: rgb(167, 233, 224);
-            color: rgba(58, 231, 231, 0.91);
+            color: rgba(12, 54, 54, 0.91);
             padding: 10px;
             text-align: center;
             font-size: 14px;
             font-family: 'Quicksand', sans-serif;
+        }
+
+        /* Updated Navigation Styles */
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: rgba(12, 54, 54, 0.91);
         }
 
         section {
@@ -59,42 +73,35 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
+            text-decoration: none; /* Add this line for consistent styling */
         }
 
         .button:hover {
             background-color: rgba(56, 142, 60, 0.91);
         }
 
-        .cart {
-            background-color: rgba(255, 152, 0, 0.91);
-            color: rgba(255, 255, 255, 0.91);
-            padding: 10px 15px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        .cart:hover {
-            background-color: rgba(230, 81, 0, 0.91);
+        /* Media Queries for Responsive Design */
+        @media only screen and (max-width: 600px) {
+            /* Add styles for smaller screens */
+            /* Adjust font sizes, margins, or other styles for better readability on small screens */
         }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Rentee Dashboard</h1>
+        <h1>Welcome {{user_name}}</h1>
     </header>
 
+    <!-- Updated Navigation -->
     <nav>
-        <a href="#profile">Profile</a>
-        <span>|</span>
-        <a href="#browse-clothes">Browse Clothes</a>
-        <span>|</span>
-        <a href="#cart">Cart</a>
-        <span>|</span>
-        <a href="#history">Rental History</a>
-        <span>|</span>
-        <a href="#notifications">Notifications</a>
+        <ul>
+            <li><a href="#profile">Profile</a></li>
+            <li><a href="#rent-history">Rent History</a></li>
+            <li><a href="#favorite-items">Favorite Items</a></li>
+            <li><a href="#notifications">Notifications</a></li>
+            <li><a href="#logout" class="button">Logout</a></li>
+        </ul>
     </nav>
 
     <section id="profile">
@@ -109,36 +116,8 @@
         <a href="#edit-profile" class="button">Edit Profile</a>
     </section>
 
-    <section id="browse-clothes">
-        <h2>Browse Clothes</h2>
-        <!-- Display a list of available clothes with Add to Cart button -->
-        <div class="item">
-            <p>Item Name: Red Party Dress</p>
-            <p>Size: M</p>
-            <p>Condition: New</p>
-            <p>Category: Party Wear</p>
-            <p>Price: $20/day</p>
-            <button class="cart">Add to Cart</button>
-        </div>
-        <!-- Add more clothes as needed -->
-    </section>
-
-    <section id="cart">
-        <h2>Cart</h2>
-        <!-- Display items added to the cart with options for removal and checkout -->
-        <div class="item">
-            <p>Item Name: Red Party Dress</p>
-            <p>Size: M</p>
-            <p>Rental Period: 7 days</p>
-            <p>Total: $140</p>
-            <button class="cart">Remove</button>
-        </div>
-        <!-- Add more cart items as needed -->
-        <button class="cart">Checkout</button>
-    </section>
-
-    <section id="history">
-        <h2>Rental History</h2>
+    <section id="rent-history">
+        <h2>Rent History</h2>
         <!-- Display a list of past rented items and their details -->
         <div class="item">
             <p>Item Name: Blue Casual Shirt</p>
@@ -147,14 +126,26 @@
             <p>Rental Date: 2023-12-15</p>
             <p>Return Date: 2023-12-20</p>
         </div>
-        <!-- Add more rental history items as needed -->
+        <!-- Add more rent history items as needed -->
+    </section>
+
+    <section id="favorite-items">
+        <h2>Favorite Items</h2>
+        <!-- Display a list of items marked as favorites by the Rentee -->
+        <div class="item">
+            <p>Item Name: Trendy Sunglasses</p>
+            <p>Category: Accessories</p>
+            <p>Size: One Size</p>
+            <p>Price: $15.99</p>
+        </div>
+        <!-- Add more favorite items as needed -->
     </section>
 
     <section id="notifications">
         <h2>Notifications</h2>
         <!-- Display any notifications or alerts for the Rentee -->
         <div class="item">
-            <p><strong>Reminder:</strong> Your rental item "Red Party Dress" is due for return tomorrow.</p>
+            <p><strong>Alert:</strong> Your favorite item "Trendy Sunglasses" is back in stock!</p>
         </div>
         <!-- Add more notifications as needed -->
     </section>

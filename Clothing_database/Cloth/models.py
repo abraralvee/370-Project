@@ -1,30 +1,31 @@
+# models.py
+
 from django.db import models
 
-# Create your models here.
 class User(models.Model):
-
-    User_ID = models.CharField(max_length=20, primary_key=True)
+    User_ID = models.CharField(max_length=20, primary_key=True, unique=True)
     First_name = models.CharField(max_length=50)
     Last_name = models.CharField(max_length=50)
     password = models.CharField(max_length=50)
     Phone_number = models.CharField(max_length=15)
 
 class Renter(models.Model):
-    User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
-    SSN= models.CharField(max_length=15, primary_key=True, default='')
+    User_ID = models.ForeignKey(User, on_delete=models.CASCADE)
+    SSN = models.CharField(max_length=15, primary_key=True, default='')
     Rating = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     Address = models.CharField(max_length=80)
     Email = models.CharField(max_length=30)
 
 class Rentee(models.Model):
-    User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
-    NID= models.CharField(max_length=15, primary_key=True, default='')
+    User_ID = models.ForeignKey(User, on_delete=models.CASCADE)
+    NID = models.CharField(max_length=15, primary_key=True, default='')
     Shipping_address = models.CharField(max_length=80)
     Email = models.CharField(max_length=30)
 
 class Delivery_person(models.Model):
-    User_ID = models.ForeignKey(User, on_delete = models.CASCADE, to_field = 'User_ID')
-    Serial_ID= models.IntegerField(primary_key=True, default=0)
+    User_ID = models.ForeignKey(User, on_delete=models.CASCADE)
+    SSN = models.CharField(max_length=15, primary_key=True)
+
 
 class Review(models.Model):
     Serial_no = models.ForeignKey('ClothingItem', on_delete=models.CASCADE, to_field='Serial_no')

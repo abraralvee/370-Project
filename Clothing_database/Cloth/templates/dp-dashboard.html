@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Renter Dashboard</title>
+    <title>Delivery Person Dashboard</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
     <style>
         body {
@@ -73,7 +73,7 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
-            text-decoration: none; /* Add this line for consistent styling */
+            text-decoration: none;
         }
 
         .button:hover {
@@ -97,8 +97,8 @@
     <nav>
         <ul>
             <li><a href="#profile">Profile</a></li>
-            <li><a href="#rented-items">Rented Items</a></li>
-            <li><a href="#history">Rental History</a></li>
+            <li><a href="#deliveries">Deliveries</a></li>
+            <li><a href="#history">Delivery History</a></li>
             <li><a href="#notifications">Notifications</a></li>
             <li><a href="#logout" class="button">Logout</a></li>
         </ul>
@@ -107,46 +107,43 @@
     <section id="profile">
         <h2>Profile</h2>
         <div class="item">
-            <!-- Display Renter's profile information -->
+            <!-- Display Delivery Person's profile information -->
             <p>Name: {{user_name}}</p>
-            <p>Email: {{user_email}}</p>
-            <p>UserID: {{user_id}}</p>
-            <p>Address: {{user_address}}</p>
+            <p>User ID: {{user_id}}</p>
         </div>
         <a href="#edit-profile" class="button">Edit Profile</a>
     </section>
 
-    <section id="rented-items">
-        <h2>Rented Items</h2>
-        <!-- Display a list of items currently rented by the Renter -->
+    <section id="deliveries">
+        <h2>Deliveries</h2>
+        <!-- Display a list of ongoing deliveries and their details -->
         <div class="item">
-            <p>Item Name: Red Party Dress</p>
-            <p>Size: M</p>
-            <p>Rental Period: 7 days</p>
-            <p>Return By: 2023-12-31</p>
-            <a href="#return-item" class="button">Return Item</a>
+            <p>Delivery ID: 001</p>
+            <p>Recipient: John Doe</p>
+            <p>Address: 123 Main St</p>
+            <p>Delivery Status: In Progress</p>
+            <a href="#complete-delivery" class="button">Complete Delivery</a>
         </div>
-        <!-- Add more rented items as needed -->
+        <!-- Add more ongoing deliveries as needed -->
     </section>
 
     <section id="history">
-        <h2>Rental History</h2>
-        <!-- Display a list of past rented items and their details -->
+        <h2>Delivery History</h2>
+        <!-- Display a list of past deliveries and their details -->
         <div class="item">
-            <p>Item Name: Blue Casual Shirt</p>
-            <p>Size: L</p>
-            <p>Rental Period: 5 days</p>
-            <p>Rental Date: 2023-12-15</p>
-            <p>Return Date: 2023-12-20</p>
+            <p>Delivery ID: 002</p>
+            <p>Recipient: Jane Doe</p>
+            <p>Address: 456 Oak St</p>
+            <p>Delivery Status: Completed</p>
         </div>
-        <!-- Add more rental history items as needed -->
+        <!-- Add more delivery history items as needed -->
     </section>
 
     <section id="notifications">
         <h2>Notifications</h2>
-        <!-- Display any notifications or alerts for the Renter -->
+        <!-- Display any notifications or alerts for the Delivery Person -->
         <div class="item">
-            <p><strong>Reminder:</strong> Your rental item "Red Party Dress" is due for return tomorrow.</p>
+            <p><strong>Note:</strong> New delivery assignment received.</p>
         </div>
         <!-- Add more notifications as needed -->
     </section>

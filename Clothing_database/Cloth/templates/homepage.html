@@ -1,23 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STYLEswap</title>
+    <title>StyleSwap</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Quicksand', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: rgb(167, 233, 224) ; 
-        }
-        #slogan {
-            font-size: 22px;
-            margin-top: 1px;
-            color: rgba(124, 29, 61, 0.91); 
-        
+            background-color: #a7e9e0;
         }
 
         header {
@@ -25,8 +20,15 @@
             color: rgba(228, 59, 115, 0.91);
             text-align: center;
             padding: 1em;
-            font-size: 28px; 
-            font-family: 'Quicksand', sans-serif; 
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        #slogan {
+            font-size: 18px;
+            color: rgba(124, 29, 61, 0.91);
+            font-weight: bold;
+            margin-bottom: 20px;
         }
 
         .container {
@@ -37,23 +39,27 @@
         }
 
         .login-box {
-            width: 200px;
+            width: 300px;
             padding: 20px;
             margin: 20px;
-            background-color:rgba(58, 231, 231, 0.91);
+            background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             cursor: pointer;
-            transition: transform 0.2s ease-in-out;
-            border-color: rgba(228, 59, 115, 0.91); /* Darker border color */
-            color: rgba(12, 51, 51, 0.91); /* Darker text color */
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            border-radius: 8px;
+            border: 2px solid #ff80ab;
+            color: #080808;
+            font-size: 14px;
         }
 
         .login-box:hover {
             transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>StyleSwap</h1>
@@ -62,16 +68,20 @@
 
     <div class="container">
         <div class="login-box" onclick="location.href='register_renter/'">
-            Renter Login
+            <h2>Renter Sign Up</h2>
+            <p>Own Stylish Clothes?<br>Sign up to Rent Them Out!</p>
         </div>
 
         <div class="login-box" onclick="location.href='register_rentee/'">
-            Rentee Login
+            <h2>Rentee Sign Up</h2>
+            <p>Elevate Your Style!<br>Rent Trendy Outfits for Any Occasion</p>
         </div>
 
-        <div class="login-box" onclick="location.href='login/'">
-            Delivery Person Login
+        <div class="login-box" onclick="location.href='register_dp/'">
+            <h2>Delivery Person Sign Up</h2>
+            <p>Join the Style Express!<br>Deliver Fashion to Doorsteps</p>
         </div>
     </div>
 </body>
+
 </html>

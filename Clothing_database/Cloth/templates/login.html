@@ -11,12 +11,12 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5e1da; /* Peach */
+            background-color: rgb(167, 233, 224);
         }
 
         header {
-            background-color: #b8d8ba; /* Mint */
-            color: #333;
+            background-color: rgba(247, 209, 221, 0.91);
+            color: rgba(228, 59, 115, 0.91);
             text-align: center;
             padding: 1em;
             font-size: 24px;
@@ -33,7 +33,7 @@
         form {
             width: 300px;
             padding: 20px;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.91);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
@@ -48,19 +48,27 @@
         button {
             width: 100%;
             padding: 10px;
-            background-color: #b8d8ba; /* Mint */
-            color: #fff;
+            background-color: rgba(76, 175, 80, 0.91);
+            color: rgba(255, 255, 255, 0.91);
             border: none;
             cursor: pointer;
         }
 
         button:hover {
-            background-color: #333;
+            background-color: rgba(56, 142, 60, 0.91);
         }
 
         .register-link {
             margin-top: 10px;
             text-align: center;
+        }
+
+        select,
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
         }
     </style>
 </head>
@@ -70,9 +78,15 @@
     </header>
 
     <div class="container">
-        <form action='../renter-dashboard/'>
-            <input type="text" placeholder="Username" required>
-            <input type="password" placeholder="Password" required>
+        <form action="{% url 'login' %}" method="POST" id="loginForm">
+            {% csrf_token %}
+            <select name="user_type" id="userType" onchange="updatePlaceholder()">
+                <option value="renter">Renter</option>
+                <option value="rentee">Rentee</option>
+                <option value="dp">Delivery Person</option>
+            </select>
+            <input type="text" placeholder="" name="key" id="key" required>
+            <input type="password" placeholder="Password" name="password" required>
             <button type="submit">Login</button>
         </form>
     </div>
@@ -80,5 +94,20 @@
     <div class="register-link">
         Don't have an account? <a href='../'>Register</a>
     </div>
+
+    <script>
+        function updatePlaceholder() {
+            var userTypeSelect = document.getElementById('userType');
+            var keyInput = document.getElementById('key');
+
+            if (userTypeSelect.value === 'renter' || userTypeSelect.value === 'delivery_person') {
+                keyInput.placeholder = 'SSN';
+            } else if (userTypeSelect.value === 'rentee') {
+                keyInput.placeholder = 'NID';
+            }
+        }
+
+        updatePlaceholder();
+    </script>
 </body>
 </html>
