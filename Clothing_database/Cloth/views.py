@@ -23,3 +23,14 @@ def login_view(request):
             return render(request, 'login.html', {'error': 'Invalid login credentials'})
 
     return render(request, 'login.html')
+
+from django.shortcuts import render
+
+
+def clothing_items(request):
+    # Fetch clothing items from the database
+    # You can add more logic here based on your requirements
+    return render(request, 'clothing_items.html')
+
+def renter_portal(request):
+    return render(request, 'renter_portal.html')
