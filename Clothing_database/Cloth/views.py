@@ -158,7 +158,7 @@ def login_view(request):
 
         password = request.POST['password']
         pass_info = ""
-        id_info = ""
+        info ={'user_id': user_id}
 
         with connection.cursor() as cursor:
             cursor.execute(retrieve_pass, [user_id])
@@ -167,13 +167,13 @@ def login_view(request):
 
             if pass_info and pass_info[0] == password:
                 cursor.execute(retrieve_name, [user_id])
-                id_info = cursor.fetchone()[0]
+                # id_info = cursor.fetchone()[0]
 
                 # dashboard_url = reverse(f'../{user}-dashboard')
-                return redirect((f'../{user}-dashboard'), user_id)
+                return render( request, (f'../{user}-dashboard'), info)
             else:
                 messages.warning(request, "Wrong password")
-                return redirect('../login')
+                return redirect('login')
 
     return render(request, 'login.html')
 

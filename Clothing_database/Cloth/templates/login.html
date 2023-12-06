@@ -78,7 +78,7 @@
     </header>
 
     <div class="container">
-        <form action="{% url 'login' %}" method="POST" id="loginForm">
+        <form action="/login_view" method="POST" id="loginForm">
             {% csrf_token %}
             <select name="user_type" id="userType" onchange="updatePlaceholder()">
                 <option value="renter">Renter</option>
