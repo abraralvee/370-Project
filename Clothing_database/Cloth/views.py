@@ -83,7 +83,7 @@ def register_renter(request):
                 existing_user = cursor.fetchone()
                 if existing_user:
                     messages.warning(request, 'You already have an account')
-                    return redirect('../login')
+                    return redirect('login')
                 else:
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_renter, (user_id, SSN, Rating, address, email))
@@ -123,7 +123,7 @@ def register_delivery_person(request):
                 existing_user = cursor.fetchone()
                 if existing_user:
                     messages.warning(request, 'You already have an account')
-                    return redirect('../login')
+                    return redirect('login')
                 else:
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_dp, (user_id, SSN))
