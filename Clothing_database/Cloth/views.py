@@ -141,41 +141,73 @@ from django.urls import reverse
 def login_view(request):
     key = None
     password = None
+    data_info = {}
 
     if request.method == "POST":
         key = request.POST['key']
         user = request.POST['user_type']
+        user_id = None
 
         if user == "renter":
             user_id = '01' + str(key)
+            info_query = "SELECT * FROM cloth_renter WHERE User_ID_id = %s"
         elif user == "rentee":
             user_id = '02' + str(key)
+            info_query = "SELECT * FROM cloth_rentee WHERE User_ID_id = %s"
         elif user == "dp":
             user_id = '03' + str(key)
+            info_query = "SELECT * FROM cloth_delivery_person WHERE User_ID_id = %s"
 
-        retrieve_pass = "SELECT password FROM cloth_user WHERE user_id = %s"
-        retrieve_name = "SELECT user_id FROM cloth_user WHERE user_id = %s"
-
-        password = request.POST['password']
-        pass_info = ""
-        info ={'user_id': user_id}
+        info= "SELECT * FROM cloth_user WHERE User_ID = %s"
 
         with connection.cursor() as cursor:
-            cursor.execute(retrieve_pass, [user_id])
-            pass_info = cursor.fetchone()
-            print(pass_info)
+            cursor.execute(info, [user_id])
+            data= cursor.fetchone()
 
-            if pass_info and pass_info[0] == password:
-                cursor.execute(retrieve_name, [user_id])
-                # id_info = cursor.fetchone()[0]
+        data_info.update({
+                'user_id' : data[0],
+                'user_name' : data[1]+ ' ' + data[2],
+                'phone_number': data[4]
+            })
 
-                # dashboard_url = reverse(f'../{user}-dashboard')
-                return render( request, (f'{user}-dashboard.html'), info)
-            else:
-                messages.warning(request, "Wrong password")
-                return redirect('login')
+        retrieve_pass = "SELECT password FROM cloth_user WHERE User_ID = %s"
+
+        with connection.cursor() as cursor:
+            # Fetch user-specific data
+            cursor.execute(info_query, [user_id])
+            user_data = cursor.fetchone()
+
+            if user_data:
+                # Update data_info based on user type
+                if user == "renter":
+                    data_info.update({
+                        'user_rating': user_data[2],
+                        'user_address': user_data[3],
+                        'user_email': user_data[4]
+                    })
+                elif user == "rentee":
+                    data_info.update({
+                        'user_address': user_data[2],
+                        'user_email': user_data[3]
+                    })
+                elif user == "dp":
+                    data_info.update({
+                        'user_serial': user_data[1]
+                    })
+
+                # Check password and render view
+                password = request.POST['password']
+                cursor.execute(retrieve_pass, [user_id])
+                pass_info = cursor.fetchone()
+
+                if pass_info and pass_info[0] == password:
+                    return render(request, f'{user}-dashboard.html', data_info)
+                else:
+                    messages.warning(request, "Wrong password")
+                    return redirect('login')
 
     return render(request, 'login.html')
+
 
 def login(request):
     return render(request, 'login.html')
