@@ -21,7 +21,7 @@ def register_rentee(request):
             password = password1
         else:
             messages.warning(request, "Please retype the password properly")
-            return redirect('../register_rentee')
+            return redirect('register_rentee')
     
         data = {
             'user_id': user_id,
@@ -38,7 +38,7 @@ def register_rentee(request):
                 existing_user = cursor.fetchone()
                 if existing_user:
                     messages.warning(request, 'You already have an account')
-                    return redirect('../login')
+                    return redirect('login')
                 else:
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_rentee, (user_id, NID, address, email))
@@ -65,7 +65,7 @@ def register_renter(request):
             password = password1
         else:
             messages.warning(request, "Please retype the password properly")
-            return redirect('../register_renter')
+            return redirect('register_renter')
     
         data = {
             'user_id': user_id,
@@ -170,13 +170,15 @@ def login_view(request):
                 # id_info = cursor.fetchone()[0]
 
                 # dashboard_url = reverse(f'../{user}-dashboard')
-                return render( request, (f'../{user}-dashboard'), info)
+                return render( request, (f'{user}-dashboard.html'), info)
             else:
                 messages.warning(request, "Wrong password")
                 return redirect('login')
 
     return render(request, 'login.html')
 
+def login(request):
+    return render(request, 'login.html')
 def renter_dashboard(request):
     return render(request, 'renter-dashboard.html')
 def rentee_dashboard(request):

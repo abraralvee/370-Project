@@ -118,6 +118,19 @@
   </style>
 </head>
 <body>
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        <strong>{{message}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <script>
+          setTimeout(function() {
+              document.querySelector('.alert').remove();
+          }, 2000); // 5000 milliseconds (5 seconds)
+      </script>
+      </div>
+      {% endfor %}
+      {% endif %}
   <script>
       function togglePasswordVisibility(inputId) {
           const passwordInput = document.getElementById(inputId);
@@ -127,7 +140,7 @@
   </script>
     <div class="wrapper">
         <h2>Rentee Registration</h2>
-      <form action='../register_rentee/' method="POST">
+      <form action='/register_rentee' method="POST">
           {% csrf_token %}
           <div class="input-box">
               <input type="text" name="first_name" placeholder="Enter your First name" required>
@@ -163,7 +176,7 @@
               <input type="submit" value="Register Now">
           </div>
           <div class="text">
-              <h3>Already have an account? <a href="../login/">Login now</a></h3>
+              <h3>Already have an account? <a href="/login">Login now</a></h3>
           </div>
       </form>
   </div>

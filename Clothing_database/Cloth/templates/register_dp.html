@@ -127,7 +127,7 @@
   </script>
     <div class="wrapper">
         <h2>Delivery Person Registration</h2>
-      <form action='../register_dp/' method="POST">
+      <form action='/register_dp' method="POST">
           {% csrf_token %}
           <div class="input-box">
               <input type="text" name="first_name" placeholder="Enter your First name" required>
@@ -157,7 +157,7 @@
               <input type="submit" value="Register Now">
           </div>
           <div class="text">
-              <h3>Already have an account? <a href="../login/">Login now</a></h3>
+              <h3>Already have an account? <a href="/login">Login now</a></h3>
           </div>
       </form>
   </div>
