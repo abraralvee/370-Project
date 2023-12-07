@@ -3,6 +3,8 @@ from django.shortcuts import render, redirect
 from django.db import IntegrityError
 from django.contrib import messages
 from django.db import connection
+from django.core.files.storage import default_storage
+from .models import ClothingItem  # Import your model
 
 def register_rentee(request):
     if request.method == "POST":
@@ -83,7 +85,7 @@ def register_renter(request):
                 existing_user = cursor.fetchone()
                 if existing_user:
                     messages.warning(request, 'You already have an account')
-                    return redirect('login')
+                    return render(request, 'login.html')
                 else:
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_renter, (user_id, SSN, Rating, address, email))
@@ -107,7 +109,7 @@ def register_delivery_person(request):
             password = password1
         else:
             messages.warning(request, "Please retype the password properly")
-            return redirect('../register_dp')
+            return redirect('register_dp')
     
         data = {
             'user_id': user_id,
@@ -135,79 +137,118 @@ def register_delivery_person(request):
 def home(request):
     return render(request, 'homepage.html')
 
-
-from django.urls import reverse
-
 def login_view(request):
-    key = None
-    password = None
-    data_info = {}
+    key = request.POST.get('key')
+    user_type = request.POST.get('user_type')
+    password = request.POST.get('password')
 
-    if request.method == "POST":
-        key = request.POST['key']
-        user = request.POST['user_type']
-        user_id = None
+    if not key or not user_type or not password:
+        messages.warning(request, "Please provide all required information.")
+        return redirect('login')
 
-        if user == "renter":
-            user_id = '01' + str(key)
-            info_query = "SELECT * FROM cloth_renter WHERE User_ID_id = %s"
-        elif user == "rentee":
-            user_id = '02' + str(key)
-            info_query = "SELECT * FROM cloth_rentee WHERE User_ID_id = %s"
-        elif user == "dp":
-            user_id = '03' + str(key)
-            info_query = "SELECT * FROM cloth_delivery_person WHERE User_ID_id = %s"
+    user_id = f'01{key}' if user_type == 'renter' else f'02{key}' if user_type == 'rentee' else f'03{key}'
 
-        info= "SELECT * FROM cloth_user WHERE User_ID = %s"
+    info_query = (
+        "SELECT * FROM cloth_renter WHERE User_ID_id = %s" if user_type == 'renter'
+        else "SELECT * FROM cloth_rentee WHERE User_ID_id = %s" if user_type == 'rentee'
+        else "SELECT * FROM cloth_delivery_person WHERE User_ID_id = %s"
+    )
 
-        with connection.cursor() as cursor:
-            cursor.execute(info, [user_id])
-            data= cursor.fetchone()
+    info_query_user = "SELECT * FROM cloth_user WHERE User_ID = %s"
 
-        data_info.update({
-                'user_id' : data[0],
-                'user_name' : data[1]+ ' ' + data[2],
-                'phone_number': data[4]
-            })
+    with connection.cursor() as cursor:
+        cursor.execute(info_query_user, [user_id])
+        user_data = cursor.fetchone()
 
-        retrieve_pass = "SELECT password FROM cloth_user WHERE User_ID = %s"
+        if not user_data:
+            messages.warning(request, "User not found.")
+            return redirect('/login')
 
-        with connection.cursor() as cursor:
-            # Fetch user-specific data
-            cursor.execute(info_query, [user_id])
-            user_data = cursor.fetchone()
+        data_info = {
+            'user_id': user_data[0],
+            'user_name': f'{user_data[1]} {user_data[2]}',
+            'phone_number': user_data[4],
+        }
 
-            if user_data:
-                # Update data_info based on user type
-                if user == "renter":
-                    data_info.update({
-                        'user_rating': user_data[2],
-                        'user_address': user_data[3],
-                        'user_email': user_data[4]
-                    })
-                elif user == "rentee":
-                    data_info.update({
-                        'user_address': user_data[2],
-                        'user_email': user_data[3]
-                    })
-                elif user == "dp":
-                    data_info.update({
-                        'user_serial': user_data[1]
-                    })
+        cursor.execute(info_query, [user_id])
+        user_specific_data = cursor.fetchone()
 
-                # Check password and render view
-                password = request.POST['password']
-                cursor.execute(retrieve_pass, [user_id])
-                pass_info = cursor.fetchone()
+        if user_specific_data:
+            if user_type == 'renter':
+                data_info.update({
+                    'user_rating': user_specific_data[2],
+                    'user_address': user_specific_data[3],
+                    'user_email': user_specific_data[4]
+                })
+            elif user_type == 'rentee':
+                data_info.update({
+                    'user_address': user_specific_data[2],
+                    'user_email': user_specific_data[3]
+                })
+            elif user_type == 'dp':
+                data_info.update({
+                    'user_serial': user_specific_data[1]
+                })
 
-                if pass_info and pass_info[0] == password:
-                    return render(request, f'{user}-dashboard.html', data_info)
-                else:
-                    messages.warning(request, "Wrong password")
-                    return redirect('login')
+            retrieve_pass = "SELECT password FROM cloth_user WHERE User_ID = %s"
+            cursor.execute(retrieve_pass, [user_id])
+            pass_info = cursor.fetchone()
 
-    return render(request, 'login.html')
+            if pass_info and pass_info[0] == password:
+                return render(request, f'{user_type}-dashboard.html', data_info)
+            else:
+                messages.warning(request, "Wrong password.")
+                return redirect('login')
+        else:
+            messages.warning(request, "User specific data not found.")
+            return redirect('login')
 
+
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def product(request):
+    if request.method == 'POST':
+        try:
+
+            serial_no = request.POST['serial_no']
+            clothing_type = request.POST['type']
+            condition = request.POST['condition']
+            size = request.POST['size']
+            category = request.POST['category']
+            rent_status = request.POST['rent_status']
+            gender = request.POST['gender']
+            price = request.POST['price']
+            if 'cloth_image' in request.FILES:
+                image = request.FILES['cloth_image']
+                image_path = default_storage.save(f"media/{image.name}", image)
+            else:
+                image_path = None
+
+            # Use Django ORM to create a new ClothingItem
+            ClothingItem.objects.create(
+                Serial_no=serial_no,
+                Type=clothing_type,
+                Condition=condition,
+                Size=size,
+                Category=category,
+                Rent_status=rent_status,
+                Gender=gender,
+                Image=image_path,
+                Price=price
+            )
+
+            messages.success(request, 'Product added successfully.')
+            return HttpResponse("hello world")
+
+        except IntegrityError:
+            messages.warning(request, 'Product with the same serial number already exists.')
+        except Exception as e:
+            messages.error(request, f'Error adding product: {e}')
+
+    return render(request, 'product.html')
 
 def login(request):
     return render(request, 'login.html')

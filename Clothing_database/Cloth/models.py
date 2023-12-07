@@ -41,8 +41,8 @@ class ClothingItem(models.Model):
     Gender = models.CharField(max_length=10)
     Image = models.CharField(max_length=50, null=True)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
-    Rating = models.DecimalField(max_digits=3, decimal_places=2, null=True)
-    Reviews = models.ManyToManyField(Review, related_name='clothing_items')
+    Rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
+    Reviews = models.ManyToManyField(Review, related_name='clothing_items', blank=True)
 
 class Cart(models.Model):
     Cart_number = models.IntegerField(primary_key=True)

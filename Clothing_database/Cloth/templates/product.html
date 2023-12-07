@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent Out Clothes</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(167, 233, 224);
+        }
+
+        header {
+            background-color: rgba(247, 209, 221, 0.91);
+            color: rgba(228, 59, 115, 0.91);
+            text-align: center;
+            padding: 1em;
+            font-size: 24px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+
+        form {
+            width: 400px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.91);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(76, 175, 80, 0.91);
+            color: rgba(255, 255, 255, 0.91);
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgba(56, 142, 60, 0.91);
+        }
+
+        .back-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Rent Out Clothes
+    </header>
+
+    <div class="container">
+        <form action="/product" method="POST" id="rentOutForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="serial_no">Serial Number</label>
+            <input type="number" name="serial_no" required>
+
+            <label for="type">Type</label>
+            <input type="text" name="type" required>
+            
+            <label for="condition">Condition</label>
+            <input type="text" name="condition" required>
+            
+            <label for="size">Size</label>
+            <input type="number" name="size" required>
+            
+            <label for="category">Category</label>
+            <input type="text" name="category" required>
+            
+            <label for="rentStatus">Rent Status</label>
+            <select name="rent_status" required>
+                <option value="available">Available</option>
+                <option value="rented">Rented</option>
+            </select>
+            
+            <label for="gender">Gender</label>
+            <select name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="unisex">Unisex</option>
+            </select>
+            
+            
+            <label for="cloth_image" class="form-label">Add Picture:</label>
+            <div class="col-sm-3">
+                <input type="file" class="form-control" id="cloth_image" accept=".jpg,.png,.jpeg" name="cloth_image">
+            </div>
+            
+            <label for="price">Price</label>
+            <input type="number" name="price" required>
+            
+            <button type="submit">Rent Out</button>
+        </form>
+    </div>
+
+    <div class="back-link">
+        <a href='/renter-dashboard'>Back to Dashboard</a>
+    </div>
+</body>
+</html>
