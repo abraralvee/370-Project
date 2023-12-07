@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.db import connection
 from django.core.files.storage import default_storage
 from .models import ClothingItem  # Import your model
+from django.shortcuts import render, get_object_or_404
 
 def register_rentee(request):
     if request.method == "POST":
@@ -25,12 +26,6 @@ def register_rentee(request):
             messages.warning(request, "Please retype the password properly")
             return redirect('register_rentee')
     
-        data = {
-            'user_id': user_id,
-            'user_name' : first_name +' '+ last_name,
-            'user_email': email,
-            'user_address': address
-        }
         find_user = "SELECT user_id FROM cloth_user WHERE user_id = %s"
         insert_user = 'insert into cloth_user (user_id, first_name, last_name, password, phone_number) values (%s, %s,%s, %s, %s)'
         insert_rentee = 'insert into cloth_rentee (User_ID_id, NID,  Shipping_address, email) values ( %s, %s, %s, %s) '
@@ -40,12 +35,12 @@ def register_rentee(request):
                 existing_user = cursor.fetchone()
                 if existing_user:
                     messages.warning(request, 'You already have an account')
-                    return redirect('login')
+                    return redirect('/login')
                 else:
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_rentee, (user_id, NID, address, email))
                     messages.success(request, 'Signup Successful')
-                    return render(request, 'rentee-dashboard.html', data)
+                    return redirect('dashboard', user_id=user_id)
                 
     return render(request, 'register_rentee.html')
 
@@ -69,13 +64,6 @@ def register_renter(request):
             messages.warning(request, "Please retype the password properly")
             return redirect('register_renter')
     
-        data = {
-            'user_id': user_id,
-            'user_name' : first_name +' '+ last_name,
-            'user_email': email,
-            'user_address': address
-        }
-
         find_user = "SELECT user_id FROM cloth_user WHERE user_id = %s"
         insert_user = 'INSERT INTO cloth_user (user_id, first_name, last_name, password, phone_number) VALUES (%s, %s, %s, %s, %s)'
         insert_renter = 'INSERT INTO cloth_renter (User_ID_id, SSN, Rating, address, email) VALUES (%s, %s, %s, %s, %s)'
@@ -90,7 +78,7 @@ def register_renter(request):
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_renter, (user_id, SSN, Rating, address, email))
                     messages.success(request, 'Signup Successful')
-                    return render(request, 'renter-dashboard.html', data)
+                    return redirect('dashboard', user_id=user_id)
                 
     return render(request, 'register_renter.html')
 
@@ -111,11 +99,6 @@ def register_delivery_person(request):
             messages.warning(request, "Please retype the password properly")
             return redirect('register_dp')
     
-        data = {
-            'user_id': user_id,
-            'user_name' : first_name + ' ' + last_name,
-        }
-
         find_user = "SELECT user_id FROM cloth_user WHERE user_id = %s"
         insert_user = 'insert into cloth_user (user_id, first_name, last_name, password, phone_number) values (%s, %s,%s, %s, %s)'
         insert_dp = 'insert into cloth_delivery_person (User_ID_id, SSN) values ( %s, %s) '
@@ -125,41 +108,35 @@ def register_delivery_person(request):
                 existing_user = cursor.fetchone()
                 if existing_user:
                     messages.warning(request, 'You already have an account')
-                    return redirect('login')
+                    return redirect('/login')
                 else:
                     cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
                     cursor.execute(insert_dp, (user_id, SSN))
                     messages.success(request, 'Signup Successful')
-                    return render(request, 'dp-dashboard.html', data)
+                    return redirect('dashboard', user_id=user_id)
                 
     return render(request, 'register_dp.html')
 
-def home(request):
-    return render(request, 'homepage.html')
 
-def login_view(request):
-    key = request.POST.get('key')
-    user_type = request.POST.get('user_type')
-    password = request.POST.get('password')
+def dashboard(request, user_id):
 
-    if not key or not user_type or not password:
-        messages.warning(request, "Please provide all required information.")
-        return redirect('login')
+    if user_id[:2] =='01':
+        user_type= 'renter'
+        info_query = "SELECT * FROM cloth_renter WHERE User_ID_id = %s"
+    elif user_id[:2] =='02':
+        user_type= 'rentee'
+        info_query = "SELECT * FROM cloth_rentee WHERE User_ID_id = %s"
+    else:
+        user_type= 'dp'
+        info_query = "SELECT * FROM cloth_delivery_person WHERE User_ID_id = %s"
 
-    user_id = f'01{key}' if user_type == 'renter' else f'02{key}' if user_type == 'rentee' else f'03{key}'
-
-    info_query = (
-        "SELECT * FROM cloth_renter WHERE User_ID_id = %s" if user_type == 'renter'
-        else "SELECT * FROM cloth_rentee WHERE User_ID_id = %s" if user_type == 'rentee'
-        else "SELECT * FROM cloth_delivery_person WHERE User_ID_id = %s"
-    )
 
     info_query_user = "SELECT * FROM cloth_user WHERE User_ID = %s"
 
     with connection.cursor() as cursor:
         cursor.execute(info_query_user, [user_id])
         user_data = cursor.fetchone()
-
+        
         if not user_data:
             messages.warning(request, "User not found.")
             return redirect('/login')
@@ -172,41 +149,68 @@ def login_view(request):
 
         cursor.execute(info_query, [user_id])
         user_specific_data = cursor.fetchone()
+        # print(user_specific_data)
 
         if user_specific_data:
             if user_type == 'renter':
                 data_info.update({
-                    'user_rating': user_specific_data[2],
-                    'user_address': user_specific_data[3],
-                    'user_email': user_specific_data[4]
-                })
-            elif user_type == 'rentee':
-                data_info.update({
+                    'user_rating': user_specific_data[1],
                     'user_address': user_specific_data[2],
                     'user_email': user_specific_data[3]
                 })
+            elif user_type == 'rentee':
+                data_info.update({
+                    'user_address': user_specific_data[1],
+                    'user_email': user_specific_data[2]
+                })
             elif user_type == 'dp':
                 data_info.update({
-                    'user_serial': user_specific_data[1]
+                    'user_serial': user_specific_data[0]
                 })
 
-            retrieve_pass = "SELECT password FROM cloth_user WHERE User_ID = %s"
-            cursor.execute(retrieve_pass, [user_id])
-            pass_info = cursor.fetchone()
+    if user_type == 'renter':
+        template_name = 'renter-dashboard.html'
+    elif user_type == 'rentee':
+        template_name = 'rentee-dashboard.html'
+    elif user_type == 'dp':
+        template_name = 'dp-dashboard.html'
 
-            if pass_info and pass_info[0] == password:
-                return render(request, f'{user_type}-dashboard.html', data_info)
+    return render(request, template_name, data_info)
+
+
+def login_view(request):
+    if request.method == "POST":
+        key = request.POST.get('key')
+        user_type = request.POST.get('user_type')
+        password = request.POST.get('password')
+
+        if user_type == 'renter':
+            user_id = '01' + key
+        elif user_type == 'rentee':
+            user_id = '02' + key
+        elif user_type == 'dp':
+            user_id = '03' + key
+
+        print(user_id)
+        info_query_user = "SELECT * FROM cloth_user WHERE User_ID = %s"
+
+        with connection.cursor() as cursor:
+            cursor.execute(info_query_user, [user_id])
+            user_data = cursor.fetchone()
+
+            if not user_data:
+                messages.warning(request, "User not found.")
+                return redirect('/login')
             else:
-                messages.warning(request, "Wrong password.")
-                return redirect('login')
-        else:
-            messages.warning(request, "User specific data not found.")
-            return redirect('login')
-
-
-
-def index(request):
-    return render(request, 'index.html')
+                retrieve_pass = "SELECT password FROM cloth_user WHERE User_ID = %s"
+                cursor.execute(retrieve_pass, [user_id])
+                pass_info = cursor.fetchone()
+                if pass_info and pass_info[0] == password:
+                    return redirect('dashboard', user_id=user_id)
+                else:
+                    messages.warning(request, "Wrong password.")
+            
+    return render(request, 'login.html')
 
 
 def product(request):
@@ -241,7 +245,8 @@ def product(request):
             )
 
             messages.success(request, 'Product added successfully.')
-            return HttpResponse("hello world")
+            print('ok')
+            return redirect('view_cloth', serial_no= serial_no)
 
         except IntegrityError:
             messages.warning(request, 'Product with the same serial number already exists.')
@@ -250,12 +255,62 @@ def product(request):
 
     return render(request, 'product.html')
 
-def login(request):
-    return render(request, 'login.html')
+def view_cloth(request, serial_no):
+    # Fetch the ClothingItem based on the serial_no
+    clothing_item = get_object_or_404(ClothingItem, Serial_no=serial_no)
+
+    # Pass the clothing_item to the template context
+    context = {
+        'clothing_item': clothing_item,
+    }
+
+    # Render the template
+    return render(request, 'view_cloth.html', context)
+
+def edit_profile(request, user_id):
+    if request.method == 'POST':
+        new_first_name = request.POST.get('new_first_name')
+        new_last_name = request.POST.get('new_last_name')
+        new_phone_number = request.POST.get('new_phone_number')
+
+        # Perform the update in the database using user_id
+        update_query = "UPDATE cloth_user SET First_name = %s, Last_name = %s, Phone_number = %s WHERE User_ID = %s"
+        with connection.cursor() as cursor:
+            cursor.execute(update_query, [new_first_name, new_last_name, new_phone_number, user_id])
+
+        messages.success(request, "Profile updated successfully.")
+        return redirect('dashboard', user_id=user_id)
+
+    # Fetch the current user data for pre-filling the form
+    info_query_user = "SELECT * FROM cloth_user WHERE user_id = %s"
+    with connection.cursor() as cursor:
+        cursor.execute(info_query_user, [user_id])
+        user_data = cursor.fetchone()
+
+        if not user_data:
+            messages.warning(request, "User not found.")
+            return redirect('dashboard', user_id=user_id)
+
+        data_info = {
+            'user_id': user_data[0],
+            'user_first_name': user_data[1],
+            'user_last_name': user_data[2],
+            'user_phone_number': user_data[4],
+        }
+
+    return render(request, 'edit_profile.html', data_info)
+def home(request):
+    return render(request, 'homepage.html')
+
+def index(request):
+    return render(request, 'index.html')
+
 def renter_dashboard(request):
     return render(request, 'renter-dashboard.html')
+
 def rentee_dashboard(request):
     return render(request, 'rentee-dashboard.html')
+
 def dp_dashboard(request):
     return render(request, 'dp-dashboard.html')
 
@@ -274,56 +329,3 @@ def payment_method(request):
 def order_placed(request):
     return render(request, 'order_placed.html')
 
-def register_rentee(request):
-    if request.method == "POST":
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        email = request.POST['email']
-        address = request.POST['address']
-        phone = request.POST['phone_number']
-        password1 = request.POST['password']
-        password2 = request.POST['confirm_password']
-        NID = request.POST['nid']
-        user_id= '02'+ str(NID)
-        password = None
-
-        if password1==password2:
-            password = password1
-        else:
-            messages.warning(request, "Please retype the password properly")
-            return redirect('../register_rentee')
-    
-        data = {
-            'user_id': user_id,
-            'user_name' : first_name +' '+ last_name,
-            'user_email': email,
-            'user_address': address
-        }
-        find_user = "select user_id from cloth_user"
-        insert_user = 'insert into cloth_user (user_id, first_name, last_name, password, phone_number) values (%s, %s,%s, %s, %s)'
-        insert_rentee = 'insert into cloth_rentee (User_ID_id, NID,  Shipping_address, email) values ( %s, %s, %s, %s) '
-
-        with connection.cursor() as cursor:
-            cursor.execute(find_user)
-            user_list = tuple(cursor.fetchall())
-            print(user_list)
-            if user_id in user_list:
-                messages.warning(request, 'You already have an account')
-                return redirect('../login')
-            else:
-                cursor.execute(insert_user, (user_id, first_name, last_name, password, phone))
-
-
-        with connection.cursor() as cursor:
-            cursor.execute(find_user)
-            user_list = tuple(cursor.fetchall())
-
-            if user_id in user_list:
-                messages.warning(request, 'You already have an account')
-                return redirect('../login')
-            else:
-                cursor.execute(insert_rentee, (user_id, NID, address ,email))
-
-        messages.success(request, 'Signup Successful')
-        return render(request, 'rentee-dashboard.html', data)
-    return render(request, 'register_rentee.html')

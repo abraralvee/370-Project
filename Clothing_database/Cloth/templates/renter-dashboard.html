@@ -114,7 +114,7 @@
             <p>Address: {{user_address}}</p>
             <p>Phone Number: {{phone_number}}</p>
         </div>
-        <a href="#edit-profile" class="button">Edit Profile</a>
+        <a href="{% url 'edit_profile' user_id=user_id %}" class="button">Edit Profile</a>
     </section>
 
     <section id="rented-items">

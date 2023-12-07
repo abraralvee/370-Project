@@ -1,17 +1,20 @@
 from django.urls import path
 from . import views
+from .views import dashboard
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 urlpatterns = [
 
     path('', views.home, name='homepage'),
+    path('dashboard/<str:user_id>', views.dashboard, name='dashboard'),
     path('register_renter', views.register_renter, name='register_renter'),
     path('register_rentee', views.register_rentee, name='register_rentee'),
     path('register_dp', views.register_delivery_person, name='register_delivery_person'),
-    path('login_view', views.login_view, name='login_view'),
-    path('login', views.login, name='login'),
+    path('login', views.login_view, name='login_view'),
+    path('edit_profile/<str:user_id>', views.edit_profile, name='edit_profile'),
     path('product', views.product, name='product'),
+    path('view_cloth/<str:serial_no>', views.view_cloth, name='view_cloth'),
     path('renter-dashboard',views.renter_dashboard,name='renter_dashboard'),
     path('rentee-dashboard',views.rentee_dashboard,name='rentee_dashboard'),
     path('dp-dashboard',views.dp_dashboard,name='dp_dashboard')

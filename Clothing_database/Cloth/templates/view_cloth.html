@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Item Details</title>
+    <!-- Add any additional styling or links here -->
+    <style>
+        /* Add your custom styles here */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(167, 233, 224);
+        }
+
+        header {
+            background-color: rgba(247, 209, 221, 0.91);
+            color: rgba(228, 59, 115, 0.91);
+            text-align: center;
+            padding: 1em;
+            font-size: 24px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 300px; /* Set a maximum height for the image */
+            margin-bottom: 20px;
+        }
+
+        /* Add more styles as needed */
+    </style>
+</head>
+<body>
+    <header>
+        Clothing Item Details
+    </header>
+
+    <div class="container">
+        <h2>{{ clothing_item.Serial_no }} - {{ clothing_item.Type }}</h2>
+        <img src="{{ clothing_item.Image.url }}" alt="{{ clothing_item.Type }} Image">
+
+        <p><strong>Serial Number:</strong> {{ clothing_item.Serial_no }}</p>
+        <p><strong>Type:</strong> {{ clothing_item.Type }}</p>
+        <p><strong>Condition:</strong> {{ clothing_item.Condition }}</p>
+        <p><strong>Size:</strong> {{ clothing_item.Size }}</p>
+        <p><strong>Category:</strong> {{ clothing_item.Category }}</p>
+        <p><strong>Rent Status:</strong> {{ clothing_item.Rent_status }}</p>
+        <p><strong>Gender:</strong> {{ clothing_item.Gender }}</p>
+        <p><strong>Price:</strong> ${{ clothing_item.Price }}</p>
+
+        <!-- Add more details as needed -->
+
+        <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+</body>
+</html>

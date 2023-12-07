@@ -73,12 +73,31 @@
     </style>
 </head>
 <body>
+    <script>
+        function updatePlaceholder() {
+            var userTypeSelect = document.getElementById('userType');
+            var keyInput = document.getElementById('key');
+            var hiddenUserType = document.getElementById('hiddenUserType');
+    
+            // Update the hidden input with the selected user_type
+            hiddenUserType.value = userTypeSelect.value;
+    
+            if (userTypeSelect.value === 'renter' || userTypeSelect.value === 'dp') {
+                keyInput.placeholder = 'SSN';
+            } else if (userTypeSelect.value === 'rentee') {
+                keyInput.placeholder = 'NID';
+            }
+        }
+    
+        updatePlaceholder();
+    </script>
     <header>
         Login page
     </header>
 
     <div class="container">
-        <form action="/login" method="POST" id="loginForm">
+        <input type="hidden" name="user_type" value="" id="hiddenUserType">
+        <form action="{% url 'login_view' %}" method="POST" id="loginForm">
             {% csrf_token %}
             <select name="user_type" id="userType" onchange="updatePlaceholder()">
                 <option value="renter">Renter</option>
@@ -95,19 +114,5 @@
         Don't have an account? <a href='../'>Register</a>
     </div>
 
-    <script>
-        function updatePlaceholder() {
-            var userTypeSelect = document.getElementById('userType');
-            var keyInput = document.getElementById('key');
-
-            if (userTypeSelect.value === 'renter' || userTypeSelect.value === 'delivery_person') {
-                keyInput.placeholder = 'SSN';
-            } else if (userTypeSelect.value === 'rentee') {
-                keyInput.placeholder = 'NID';
-            }
-        }
-
-        updatePlaceholder();
-    </script>
 </body>
 </html>

@@ -71,7 +71,7 @@
     </header>
 
     <div class="container">
-        <form action="/product" method="POST" id="rentOutForm" enctype="multipart/form-data">
+        <form action="view_cloth.html" method="POST" id="rentOutForm" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="serial_no">Serial Number</label>
             <input type="number" name="serial_no" required>
@@ -115,7 +115,7 @@
     </div>
 
     <div class="back-link">
-        <a href='/renter-dashboard'>Back to Dashboard</a>
+        <a href="dashboard">Back to Dashboard</a>
     </div>
 </body>
 </html>

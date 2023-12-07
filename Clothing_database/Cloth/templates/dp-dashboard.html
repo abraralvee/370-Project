@@ -111,7 +111,7 @@
             <p>Name: {{user_name}}</p>
             <p>User ID: {{user_id}}</p>
         </div>
-        <a href="#edit-profile" class="button">Edit Profile</a>
+        <a href="{% url 'edit_profile' user_id=user_id %}" class="button">Edit Profile</a>
     </section>
 
     <section id="deliveries">

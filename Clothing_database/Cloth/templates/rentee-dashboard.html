@@ -113,7 +113,7 @@
             <p>UserID: {{user_id}}</p>
             <p>Shipping Address: {{user_address}}</p>
         </div>
-        <a href="#edit-profile" class="button">Edit Profile</a>
+        <a href="{% url 'edit_profile' user_id=user_id %}" class="button">Edit Profile</a>
     </section>
 
     <section id="rent-history">
