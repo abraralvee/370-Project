@@ -14,6 +14,11 @@ urlpatterns = [
     path('renter-dashboard',views.renter_dashboard,name='renter_dashboard'),
     path('rentee-dashboard',views.rentee_dashboard,name='rentee_dashboard'),
     path('dp-dashboard',views.dp_dashboard,name='dp_dashboard')
+    # path('rentee_home', views.rentee_home, name= 'rentee_home'),
+    # path ('cart/', views.cart, name = 'cart'),
+    # path('checkout/', views.checkout, name='checkout'),
+    # path('choose-payment-method/', views.payment_method, name='choose_payment_method'),
+    # path('order-placed/',views.order_placed, name= 'order_placed')
     # path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
