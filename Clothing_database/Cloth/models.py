@@ -31,39 +31,18 @@ class Review(models.Model):
     Serial_no = models.ForeignKey('ClothingItem', on_delete=models.CASCADE, to_field='Serial_no')
     Reviews = models.CharField(max_length=50)
 
-class Category(models.Model):
-    class Meta:
-        verbose_name = 'Category'
-        verbose_name_plural = 'Categories'
-
-    Serial_no = models.ForeignKey('ClothingItem', on_delete=models.CASCADE, to_field='Serial_no')
-    Name = models.CharField(max_length=100, null=False, blank=False)
-
-    def __str__(self):
-        return self.Name
-
-class Image(models.Model):
-    class Meta:
-        verbose_name = 'Image'
-        verbose_name_plural = 'Images'
-    
-    Serial_no = models.ForeignKey('ClothingItem', on_delete=models.CASCADE, to_field='Serial_no')
-    image = models.CharField(max_length=100, null=True, blank=False)
-    
-
-    def __str__(self):
-        return self.description
-
 class ClothingItem(models.Model):
     Serial_no = models.CharField(max_length=12, primary_key=True)
     Type = models.CharField(max_length=10)
     Condition = models.CharField(max_length=10)
     Size = models.IntegerField()
+    Category = models.CharField(max_length=10)
     Rent_status = models.CharField(max_length=10)
     Gender = models.CharField(max_length=10)
+    Image = models.CharField(max_length=50, null=True)
     Price = models.DecimalField(max_digits=10, decimal_places=2)
-    Rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.0)
-    Reviews = models.ManyToManyField(Review, related_name='clothing_items', blank=True)
+    Rating = models.DecimalField(max_digits=3, decimal_places=2, null=True)
+    Reviews = models.ManyToManyField(Review, related_name='clothing_items')
 
 class Cart(models.Model):
     Cart_number = models.IntegerField(primary_key=True)
