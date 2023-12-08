@@ -120,7 +120,6 @@ def register_delivery_person(request):
 
 
 def dashboard(request, user_id):
-
     if user_id[:2] =='01':
         user_type= 'renter'
         info_query = "SELECT * FROM cloth_renter WHERE User_ID_id = %s"
@@ -131,7 +130,6 @@ def dashboard(request, user_id):
     else:
         user_type= 'dp'
         info_query = "SELECT * FROM cloth_delivery_person WHERE User_ID_id = %s"
-
 
     info_query_user = "SELECT * FROM cloth_user WHERE User_ID = %s"
 
@@ -243,8 +241,7 @@ def product(request, user_id):
             rent_status = request.POST['rent_status']
             gender = request.POST['gender']
             price = request.POST['price']
-
-            # I Checked if the serial number already exists in the database
+            
             find_product_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
             with connection.cursor() as cursor:
                 cursor.execute(find_product_query, [serial_no])
@@ -260,9 +257,6 @@ def product(request, user_id):
             else:
                 image_path = None
 
-            # user_instance = get_object_or_404(User, User_ID=user_id)
-
-            # Use SQL query to insert data
             insert_product_query = """
             INSERT INTO cloth_ClothingItem (Serial_no, Type, `Condition`, Size, Category, Rent_status, Gender, Image, Price, renter_id_id)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -321,7 +315,7 @@ def edit_profile(request, user_id):
         new_last_name = request.POST.get('new_last_name')
         new_phone_number = request.POST.get('new_phone_number')
 
-        # Perform the update in the database using user_id
+        
         update_query = "UPDATE cloth_user SET First_name = %s, Last_name = %s, Phone_number = %s WHERE User_ID = %s"
         with connection.cursor() as cursor:
             cursor.execute(update_query, [new_first_name, new_last_name, new_phone_number, user_id])
@@ -329,7 +323,7 @@ def edit_profile(request, user_id):
         messages.success(request, "Profile updated successfully.")
         return redirect('dashboard', user_id=user_id)
 
-    # Fetch the current user data for pre-filling the form
+
     info_query_user = "SELECT * FROM cloth_user WHERE user_id = %s"
     with connection.cursor() as cursor:
         cursor.execute(info_query_user, [user_id])

@@ -100,20 +100,30 @@
             content: counter(item);
             font-weight: bold;
             margin-right: 10px;
+        }.rented-item {
+            border: 1px solid rgba(221, 221, 221, 0.91);
+            padding: 10px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.91);
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .rented-item:hover {
+            background-color: rgba(200, 230, 201, 0.91);
         }
     </style>
 </head>
+
 <body>
     <header>
         <h1>Welcome {{user_name}}</h1>
     </header>
-    
+
     <nav>
         <ul>
             <li><a href="#profile">Profile</a></li>
             <li><a href="#rented-items">Rented Items</a></li>
-            <li><a href="#history">Rental History</a></li>
-            <li><a href="#notifications">Notifications</a></li>
             <li><a href="#logout" class="button">Logout</a></li>
         </ul>
     </nav>
@@ -121,7 +131,6 @@
     <section id="profile">
         <h2>Profile</h2>
         <div class="item">
-            <!-- Display Renter's profile information -->
             <p>Name: {{user_name}}</p>
             <p>Email: {{user_email}}</p>
             <p>UserID: {{user_id}}</p>
@@ -133,43 +142,19 @@
 
     <section id="rented-items">
         <h2>Rented Items</h2>
-        <ul class="numbered-list">
-            {% if rented_clothes %}
-                {% for rented_item in rented_clothes %}
-                    <li>
-                        <p>Item Type: {{ rented_item.type }}</p>
-                        <p>Serial ID: {{ rented_item.serial_no }}</p>
-                        <p>Rental Status: {{ rented_item.rental_status }}</p>
-                        <p>Price: {{ rented_item.price }}</p>
-                    </li>
-                {% endfor %}
-            {% else %}
-                <p>No rented items at the moment.</p>
-            {% endif %}
-        </ul>
+        {% if rented_clothes %}
+            {% for rented_item in rented_clothes %}
+            <div class="rented-item" onclick="window.location='{% url 'view_cloth' serial_no=rented_item.serial_no %}'">
+                    <p>Item Type: {{ rented_item.type }}</p>
+                    <p>Serial ID: {{ rented_item.serial_no }}</p>
+                    <p>Rental Status: {{ rented_item.rental_status }}</p>
+                    <p>Price: {{ rented_item.price }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No rented items at the moment.</p>
+        {% endif %}
         <a href="{% url 'product' user_id=user_id %}" class="button">Rent Out Clothes</a>
-    </section>
-
-    <section id="history">
-        <h2>Rental History</h2>
-        <!-- Display a list of past rented items and their details -->
-        <div class="item">
-            <p>Item Name: Blue Casual Shirt</p>
-            <p>Size: L</p>
-            <p>Rental Period: 5 days</p>
-            <p>Rental Date: 2023-12-15</p>
-            <p>Return Date: 2023-12-20</p>
-        </div>
-        <!-- Add more rental history items as needed -->
-    </section>
-
-    <section id="notifications">
-        <h2>Notifications</h2>
-        <!-- Display any notifications or alerts for the Renter -->
-        <div class="item">
-            <p><strong>Reminder:</strong> Your rental item "Red Party Dress" is due for return tomorrow.</p>
-        </div>
-        <!-- Add more notifications as needed -->
     </section>
 </body>
 
