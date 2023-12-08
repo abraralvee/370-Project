@@ -48,7 +48,8 @@
 
     <div class="container">
         <h2>{{ clothing_item.Serial_no }} - {{ clothing_item.Type }}</h2>
-        <img src="{{ clothing_item.Image.url }}" alt="{{ clothing_item.Type }} Image">
+        <img src="{{ clothing_item.Image }}" alt="{{ clothing_item.Type }} Image">
+
 
         <p><strong>Serial Number:</strong> {{ clothing_item.Serial_no }}</p>
         <p><strong>Type:</strong> {{ clothing_item.Type }}</p>
@@ -61,7 +62,7 @@
 
         <!-- Add more details as needed -->
 
-        <a href="{% url 'dashboard' %}">Back to Dashboard</a>
+        <a href="">Back to Dashboard</a>
     </div>
 </body>
 </html>

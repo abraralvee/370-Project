@@ -93,9 +93,9 @@
         <h1>Welcome {{user_name}}</h1>
     </header>
 
-    <!-- Updated Navigation -->
     <nav>
         <ul>
+            <li><a href="{% url 'rentee_home' user_id=user_id %}">Home</a></li>
             <li><a href="#profile">Profile</a></li>
             <li><a href="#rent-history">Rent History</a></li>
             <li><a href="#favorite-items">Favorite Items</a></li>

@@ -191,7 +191,6 @@ def login_view(request):
         elif user_type == 'dp':
             user_id = '03' + key
 
-        print(user_id)
         info_query_user = "SELECT * FROM cloth_user WHERE User_ID = %s"
 
         with connection.cursor() as cursor:
@@ -227,11 +226,10 @@ def product(request):
             price = request.POST['price']
             if 'cloth_image' in request.FILES:
                 image = request.FILES['cloth_image']
-                image_path = default_storage.save(f"media/{image.name}", image)
+                image_path = default_storage.save(f"{image}", image)
             else:
                 image_path = None
 
-            # Use Django ORM to create a new ClothingItem
             ClothingItem.objects.create(
                 Serial_no=serial_no,
                 Type=clothing_type,
@@ -245,7 +243,6 @@ def product(request):
             )
 
             messages.success(request, 'Product added successfully.')
-            print('ok')
             return redirect('view_cloth', serial_no= serial_no)
 
         except IntegrityError:
@@ -256,16 +253,44 @@ def product(request):
     return render(request, 'product.html')
 
 def view_cloth(request, serial_no):
-    # Fetch the ClothingItem based on the serial_no
-    clothing_item = get_object_or_404(ClothingItem, Serial_no=serial_no)
+    if request.method == 'GET':
+        # Fetch the ClothingItem based on the serial_no using raw SQL query
+        select_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
+        with connection.cursor() as cursor:
+            cursor.execute(select_query, [serial_no])
+            row = cursor.fetchone()
 
-    # Pass the clothing_item to the template context
-    context = {
-        'clothing_item': clothing_item,
-    }
+        # Check if the clothing item exists
+        if not row:
+            return render(request, 'product.html')
 
-    # Render the template
-    return render(request, 'view_cloth.html', context)
+        # Create a dictionary from the row data
+        clothing_item = {
+            'Serial_no': row[0],
+            'Type': row[1],
+            'Condition': row[2],
+            'Size': row[3],
+            'Category': row[4],
+            'Rent_status': row[5],
+            'Gender': row[6],
+            'Image': row[7],
+            'Price': row[8],
+        }
+
+        # Pass the clothing_item to the template context
+        context = {
+            'clothing_item': clothing_item,
+        }
+
+        # Render the template
+        return render(request, 'view_cloth.html', context)
+
+    elif request.method == 'POST':
+        # Handle POST request logic here
+        return HttpResponse("This is a POST request.")
+
+    # Handle other request methods if needed
+    return HttpResponse("Unsupported request method.")
 
 def edit_profile(request, user_id):
     if request.method == 'POST':
@@ -299,6 +324,31 @@ def edit_profile(request, user_id):
         }
 
     return render(request, 'edit_profile.html', data_info)
+
+from .models import User
+
+def rentee_home(request, user_id):
+    try:
+        user_profile = User.objects.get(User_ID=user_id)
+    except User.DoesNotExist:
+        return HttpResponse("User not found", status=404)
+
+    products = ClothingItem.objects.all()
+    for product in products:
+        product.star_range = range(int(product.Rating or 0))
+
+    context = {
+        'user_info': {
+            'user_id': user_profile.User_ID,
+            'user_first_name': user_profile.First_name,
+            'user_last_name': user_profile.Last_name,
+            'user_phone_number': user_profile.Phone_number,
+        },
+        'products': products,
+    }
+
+    return render(request, 'rentee_home.html', context)
+
 def home(request):
     return render(request, 'homepage.html')
 
@@ -313,9 +363,6 @@ def rentee_dashboard(request):
 
 def dp_dashboard(request):
     return render(request, 'dp-dashboard.html')
-
-def rentee_home(request):
-    return render(request,'rentee_home.html')
 
 def cart(request):
     return render (request,'cart.html')

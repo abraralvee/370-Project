@@ -30,6 +30,13 @@
   </div>
 </div>
 <!---------- Top Header HTML Code Ends --------->
+<div>
+  <h1>Welcome {{ user_info.user_first_name }} {{ user_info.user_last_name }}</h1>
+  <p>User ID: {{ user_info.user_id }}</p>
+  <p>First Name: {{ user_info.user_first_name }}</p>
+  <p>Last Name: {{ user_info.user_last_name }}</p>
+  <p>Phone Number: {{ user_info.user_phone_number }}</p>
+</div>
 <!---------- Logo and Search Panel HTML Code Starts --------->
 <div class="width-100 search-panel">
   <div class="container">
@@ -46,7 +53,7 @@
       <ul class="cart-sect">
         <li>
           <i class="fa fa-heart-o" aria-hidden="true"></i>
-          <a class="head1mr" href="#">Whislist</a>
+          <a class="head1mr" href="{% url 'dashboard' user_id=user_info.user_id %}">Dashboard</a>
         </li>
         <!-- <li>
           <i class="fa fa-user-circle-o" aria-hidden="true"></i>
@@ -54,7 +61,7 @@
         </li> -->
         <li>
           <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-          <a href="../cart">Cart</a>
+          <a href="{% url 'cart' user_id=user_info.user_id %}">Cart</a>
         </li>
       </ul>
     </div>
