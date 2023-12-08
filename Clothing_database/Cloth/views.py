@@ -6,6 +6,7 @@ from django.db import connection
 from django.core.files.storage import default_storage
 from .models import ClothingItem  # Import your model
 from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseServerError
 
 def register_rentee(request):
     if request.method == "POST":
@@ -123,6 +124,7 @@ def dashboard(request, user_id):
     if user_id[:2] =='01':
         user_type= 'renter'
         info_query = "SELECT * FROM cloth_renter WHERE User_ID_id = %s"
+        rented_clothes_query = "SELECT * FROM cloth_Clothingitem WHERE renter_id_id = %s"
     elif user_id[:2] =='02':
         user_type= 'rentee'
         info_query = "SELECT * FROM cloth_rentee WHERE User_ID_id = %s"
@@ -158,6 +160,21 @@ def dashboard(request, user_id):
                     'user_address': user_specific_data[2],
                     'user_email': user_specific_data[3]
                 })
+                with connection.cursor() as cursor:
+                    cursor.execute(rented_clothes_query, [user_id])
+                    rented_clothes_data = cursor.fetchall()
+
+                    rented_clothes_list = []
+                    for rented_clothes in rented_clothes_data:
+                        rented_clothes_info = {
+                        'type': rented_clothes[1],
+                        'serial_no': rented_clothes[0],
+                        'rental_status': rented_clothes[5],
+                        'price': rented_clothes[8],
+                        }
+                        rented_clothes_list.append(rented_clothes_info)
+                    data_info['rented_clothes'] = rented_clothes_list
+                    print(rented_clothes_list)
             elif user_type == 'rentee':
                 data_info.update({
                     'user_address': user_specific_data[1],
@@ -170,6 +187,7 @@ def dashboard(request, user_id):
 
     if user_type == 'renter':
         template_name = 'renter-dashboard.html'
+        
     elif user_type == 'rentee':
         template_name = 'rentee-dashboard.html'
     elif user_type == 'dp':
@@ -211,11 +229,12 @@ def login_view(request):
             
     return render(request, 'login.html')
 
+def product(request, user_id):
+    renter_id= user_id
+    context = {'user_id': user_id}
 
-def product(request):
     if request.method == 'POST':
         try:
-
             serial_no = request.POST['serial_no']
             clothing_type = request.POST['type']
             condition = request.POST['condition']
@@ -224,47 +243,54 @@ def product(request):
             rent_status = request.POST['rent_status']
             gender = request.POST['gender']
             price = request.POST['price']
+
+            # I Checked if the serial number already exists in the database
+            find_product_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
+            with connection.cursor() as cursor:
+                cursor.execute(find_product_query, [serial_no])
+                existing_product = cursor.fetchone()
+
+            if existing_product:
+                messages.warning(request, 'Product with the same serial number already exists.')
+                return render(request, 'product.html', context)
+
             if 'cloth_image' in request.FILES:
                 image = request.FILES['cloth_image']
                 image_path = default_storage.save(f"{image}", image)
             else:
                 image_path = None
 
-            ClothingItem.objects.create(
-                Serial_no=serial_no,
-                Type=clothing_type,
-                Condition=condition,
-                Size=size,
-                Category=category,
-                Rent_status=rent_status,
-                Gender=gender,
-                Image=image_path,
-                Price=price
-            )
+            # user_instance = get_object_or_404(User, User_ID=user_id)
+
+            # Use SQL query to insert data
+            insert_product_query = """
+            INSERT INTO cloth_ClothingItem (Serial_no, Type, `Condition`, Size, Category, Rent_status, Gender, Image, Price, renter_id_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(insert_product_query, [serial_no, clothing_type, condition, size, category, rent_status, gender, image_path, price, renter_id])
 
             messages.success(request, 'Product added successfully.')
-            return redirect('view_cloth', serial_no= serial_no)
+            return redirect('view_cloth', serial_no=serial_no)
 
-        except IntegrityError:
-            messages.warning(request, 'Product with the same serial number already exists.')
         except Exception as e:
             messages.error(request, f'Error adding product: {e}')
+            return HttpResponseServerError(f'Internal Server Error: {e}')
 
-    return render(request, 'product.html')
+    return render(request, 'product.html', context)
+
 
 def view_cloth(request, serial_no):
     if request.method == 'GET':
-        # Fetch the ClothingItem based on the serial_no using raw SQL query
         select_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
         with connection.cursor() as cursor:
             cursor.execute(select_query, [serial_no])
             row = cursor.fetchone()
+            print(row)
 
-        # Check if the clothing item exists
         if not row:
-            return render(request, 'product.html')
+            return render(request, 'homepage.html')
 
-        # Create a dictionary from the row data
         clothing_item = {
             'Serial_no': row[0],
             'Type': row[1],
@@ -275,21 +301,18 @@ def view_cloth(request, serial_no):
             'Gender': row[6],
             'Image': row[7],
             'Price': row[8],
+            'renter_id_id':row[10]
         }
 
-        # Pass the clothing_item to the template context
         context = {
             'clothing_item': clothing_item,
         }
 
-        # Render the template
         return render(request, 'view_cloth.html', context)
 
     elif request.method == 'POST':
-        # Handle POST request logic here
         return HttpResponse("This is a POST request.")
 
-    # Handle other request methods if needed
     return HttpResponse("Unsupported request method.")
 
 def edit_profile(request, user_id):

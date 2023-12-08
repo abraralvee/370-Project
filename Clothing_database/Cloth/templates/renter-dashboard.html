@@ -85,15 +85,29 @@
             /* Add styles for smaller screens */
             /* Adjust font sizes, margins, or other styles for better readability on small screens */
         }
+        .numbered-list {
+            counter-reset: item;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .numbered-list li {
+            counter-increment: item;
+            margin-bottom: 10px;
+        }
+
+        .numbered-list li::before {
+            content: counter(item);
+            font-weight: bold;
+            margin-right: 10px;
+        }
     </style>
 </head>
-
 <body>
     <header>
         <h1>Welcome {{user_name}}</h1>
     </header>
-
-    <!-- Updated Navigation -->
+    
     <nav>
         <ul>
             <li><a href="#profile">Profile</a></li>
@@ -119,18 +133,21 @@
 
     <section id="rented-items">
         <h2>Rented Items</h2>
-        <!-- Add this button inside the section or area where you want to provide the option to rent out clothes -->
-        <a href="{% url 'product' %}" class="button">Rent Out Clothes</a>
-
-        <!-- Display a list of items currently rented by the Renter -->
-        <div class="item">
-            <p>Item Name: Red Party Dress</p>
-            <p>Size: M</p>
-            <p>Rental Period: 7 days</p>
-            <p>Return By: 2023-12-31</p>
-            <a href="#return-item" class="button">Return Item</a>
-        </div>
-        <!-- Add more rented items as needed -->
+        <ul class="numbered-list">
+            {% if rented_clothes %}
+                {% for rented_item in rented_clothes %}
+                    <li>
+                        <p>Item Type: {{ rented_item.type }}</p>
+                        <p>Serial ID: {{ rented_item.serial_no }}</p>
+                        <p>Rental Status: {{ rented_item.rental_status }}</p>
+                        <p>Price: {{ rented_item.price }}</p>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <p>No rented items at the moment.</p>
+            {% endif %}
+        </ul>
+        <a href="{% url 'product' user_id=user_id %}" class="button">Rent Out Clothes</a>
     </section>
 
     <section id="history">

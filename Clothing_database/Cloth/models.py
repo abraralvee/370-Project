@@ -43,6 +43,7 @@ class ClothingItem(models.Model):
     Price = models.DecimalField(max_digits=10, decimal_places=2)
     Rating = models.DecimalField(max_digits=3, decimal_places=2, null=True)
     Reviews = models.ManyToManyField(Review, related_name='clothing_items')
+    renter_id= models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
 class Cart(models.Model):
     Cart_number = models.IntegerField(primary_key=True)
