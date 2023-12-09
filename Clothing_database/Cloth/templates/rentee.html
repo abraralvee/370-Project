@@ -1,0 +1,129 @@
+<!-- rentee.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rentee Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Quicksand">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: rgb(167, 233, 224);
+        }
+
+        h1 {
+            background-color: rgba(247, 209, 221, 0.91);
+            color: rgba(228, 59, 115, 0.91);
+            text-align: center;
+            padding: 1em;
+            font-size: 28px;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        form {
+            width: 100%;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input {
+            width: 60%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 20%;
+            padding: 10px 15px;
+            background-color: rgba(76, 175, 80, 0.91);
+            color: rgba(255, 255, 255, 0.91);
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        #product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .product-container {
+            width: 30%;
+            border: 1px solid rgba(221, 221, 221, 0.91);
+            padding: 10px;
+            margin: 10px;
+            background-color: rgba(255, 255, 255, 0.91);
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .product-type {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: rgba(76, 175, 80, 0.91);
+        }
+
+        .product-info {
+            margin-top: 10px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            background-color: rgba(76, 175, 80, 0.91);
+            color: rgba(255, 255, 255, 0.91);
+            padding: 10px 15px;
+            text-decoration: none;
+            border-radius: 3px;
+        }
+
+        a:hover {
+            background-color: rgba(56, 142, 60, 0.91);
+        }
+    </style>
+</head>
+<body>
+    <h1>Product Listing</h1>
+
+    <form action="{% url 'rentee' %}" method="get">
+        <label for="search_query">Search by Product Name:</label>
+        <input type="text" id="search_query" name="search_query" placeholder="Enter product name">
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="product-list">
+        <!-- Dummy Products for Testing -->
+        {% for item_with_images in item_data_with_images %}
+            <div class="product-container">
+                <div class="product-type">{{ item_with_images.item.Type }}</div>
+                <h2>{{ item_with_images.item.Serial_no }}</h2>
+                <div class="product-info">
+                    <p>Condition: {{ item_with_images.item.Condition }}</p>
+                    <p>Size: {{ item_with_images.item.Size }}</p>
+                    <!-- Add other relevant information as needed -->
+                    {% if item_with_images.images %}
+                        <img src="{{ item_with_images.images.url }}" alt="Item Image">
+                    {% endif %}
+                    <a href="{% url 'product_detail' item_with_images.item.Serial_no %}">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

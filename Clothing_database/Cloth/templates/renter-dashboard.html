@@ -100,10 +100,12 @@
             content: counter(item);
             font-weight: bold;
             margin-right: 10px;
-        }.rented-item {
+        }
+
+        .rented-item {
             border: 1px solid rgba(221, 221, 221, 0.91);
             padding: 10px;
-            margin: 10px;
+            margin: 10px 0; /* Adjusted margin */
             background-color: rgba(255, 255, 255, 0.91);
             border-radius: 5px;
             cursor: pointer;
@@ -124,7 +126,6 @@
         <ul>
             <li><a href="#profile">Profile</a></li>
             <li><a href="#rented-items">Rented Items</a></li>
-            <li><a href="#logout" class="button">Logout</a></li>
         </ul>
     </nav>
 
@@ -138,17 +139,23 @@
             <p>Phone Number: {{phone_number}}</p>
         </div>
         <a href="{% url 'edit_profile' user_id=user_id %}" class="button">Edit Profile</a>
+        <a href="{% url 'delete_profile' user_id=user_id %}" class="button">Delete Profile</a>
     </section>
 
     <section id="rented-items">
         <h2>Rented Items</h2>
         {% if rented_clothes %}
             {% for rented_item in rented_clothes %}
-            <div class="rented-item" onclick="window.location='{% url 'view_cloth' serial_no=rented_item.serial_no %}'">
+                <div class="rented-item" onclick="window.location='{% url 'product_detail' serial_no=rented_item.serial_no %}'">
                     <p>Item Type: {{ rented_item.type }}</p>
                     <p>Serial ID: {{ rented_item.serial_no }}</p>
                     <p>Rental Status: {{ rented_item.rental_status }}</p>
                     <p>Price: {{ rented_item.price }}</p>
+                    
+                    <form action="{% url 'delete_rented_item' serial_no=rented_item.serial_no %}" method="post" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="button" onclick="return confirm('Are you sure you want to delete this rented item?')">Delete</button>
+                    </form>
                 </div>
             {% endfor %}
         {% else %}

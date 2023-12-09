@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.Type }} Detail</title>
+</head>
+<body>
+
+    <h1>{{ product.Type }} Detail</h1>
+
+    <p>Serial Number: {{ product.Serial_no }}</p>
+    <p>Condition: {{ product.Condition }}</p>
+    <p>Size: {{ product.Size }}</p>
+    <!-- Add other relevant information as needed -->
+    {% if product.Image %}
+        <img src="{{ product.Image.url }}" alt="Item Image">
+    {% endif %}
+
+</body>
+</html>

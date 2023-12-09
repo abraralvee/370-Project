@@ -4,7 +4,7 @@ from django.db import IntegrityError
 from django.contrib import messages
 from django.db import connection
 from django.core.files.storage import default_storage
-from .models import ClothingItem  # Import your model
+from .models import ClothingItem, Review
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseServerError
 
@@ -172,7 +172,6 @@ def dashboard(request, user_id):
                         }
                         rented_clothes_list.append(rented_clothes_info)
                     data_info['rented_clothes'] = rented_clothes_list
-                    print(rented_clothes_list)
             elif user_type == 'rentee':
                 data_info.update({
                     'user_address': user_specific_data[1],
@@ -265,7 +264,7 @@ def product(request, user_id):
                 cursor.execute(insert_product_query, [serial_no, clothing_type, condition, size, category, rent_status, gender, image_path, price, renter_id])
 
             messages.success(request, 'Product added successfully.')
-            return redirect('view_cloth', serial_no=serial_no)
+            return redirect('product_detail', serial_no=serial_no)
 
         except Exception as e:
             messages.error(request, f'Error adding product: {e}')
@@ -274,40 +273,40 @@ def product(request, user_id):
     return render(request, 'product.html', context)
 
 
-def view_cloth(request, serial_no):
-    if request.method == 'GET':
-        select_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
-        with connection.cursor() as cursor:
-            cursor.execute(select_query, [serial_no])
-            row = cursor.fetchone()
-            print(row)
+# def view_cloth(request, serial_no):
+#     if request.method == 'GET':
+#         select_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
+#         with connection.cursor() as cursor:
+#             cursor.execute(select_query, [serial_no])
+#             row = cursor.fetchone()
+#             print(row)
 
-        if not row:
-            return render(request, 'homepage.html')
+#         if not row:
+#             return render(request, 'homepage.html')
 
-        clothing_item = {
-            'Serial_no': row[0],
-            'Type': row[1],
-            'Condition': row[2],
-            'Size': row[3],
-            'Category': row[4],
-            'Rent_status': row[5],
-            'Gender': row[6],
-            'Image': row[7],
-            'Price': row[8],
-            'renter_id_id':row[10]
-        }
+#         clothing_item = {
+#             'Serial_no': row[0],
+#             'Type': row[1],
+#             'Condition': row[2],
+#             'Size': row[3],
+#             'Category': row[4],
+#             'Rent_status': row[5],
+#             'Gender': row[6],
+#             'Image': row[7],
+#             'Price': row[8],
+#             'renter_id_id':row[10]
+#         }
 
-        context = {
-            'clothing_item': clothing_item,
-        }
+#         context = {
+#             'clothing_item': clothing_item,
+#         }
 
-        return render(request, 'view_cloth.html', context)
+#         return render(request, 'view_cloth.html', context)
 
-    elif request.method == 'POST':
-        return HttpResponse("This is a POST request.")
+#     elif request.method == 'POST':
+#         return HttpResponse("This is a POST request.")
 
-    return HttpResponse("Unsupported request method.")
+#     return HttpResponse("Unsupported request method.")
 
 def edit_profile(request, user_id):
     if request.method == 'POST':
@@ -365,6 +364,84 @@ def rentee_home(request, user_id):
     }
 
     return render(request, 'rentee_home.html', context)
+
+def delete_rented_item(request, serial_no):
+    rented_item = get_object_or_404(ClothingItem, Serial_no=serial_no)
+    user_id= rented_item.renter_id_id
+
+    if rented_item.Rent_status == 'available':
+        rented_item.delete()
+
+    return redirect('dashboard', user_id)
+
+def delete_profile(request, user_id):
+    return render(request,'delete_profile.html',{'user_id':user_id})
+
+#ALVEE
+
+def rentee(request):
+    search_query = request.GET.get('search_query', '')
+    category_query = request.GET.get('Category')
+
+    if search_query:
+
+        item_data = ClothingItem.objects.filter(Type__icontains=search_query)
+    elif category_query:
+
+        item_data = ClothingItem.objects.filter(Category__icontains=category_query)
+    else:
+        item_data = ClothingItem.objects.all()
+
+    item_data_with_images = []
+    for item in item_data:
+        images = item.Image
+        item_data_with_images.append({'item': item, 'images': images})
+
+    data = {'item_data_with_images': item_data_with_images}
+
+    return render(request, 'rentee.html', data)
+
+def product_detail_view(request, serial_no):
+    product = ClothingItem.objects.get(Serial_no=serial_no)
+    reviews = product.Reviews.all()  
+    images = product.Image
+    context = {'product': product, 'images': images, 'reviews': reviews}
+    return render(request, 'product_detail.html', context)
+
+def submit_comment(request, serial_no):
+    if request.method == 'POST':
+        customer_name = request.POST.get('customer_name')
+        new_comment = request.POST.get('new_comment')
+        rating = request.POST.get('rating')
+
+        clothing_item = ClothingItem.objects.get(Serial_no=serial_no)
+        # rating= clothing_item.Rating.all()
+        review = Review.objects.create(Serial_no_id=serial_no, Reviews=new_comment)
+
+        return redirect('review_detail', review_id=review.id)
+    if 'redirect_to_review' in request.GET:
+        return redirect('review_detail', review_id=review.id)
+
+    return redirect('product_detail', serial_no=serial_no)
+
+def submit_rating(request, serial_no):
+    if request.method == 'POST':
+        new_rating = int(request.POST.get('new_rating', 0))
+        if 1 <= new_rating <= 5:
+            product = get_object_or_404(ClothingItem, Serial_no=serial_no)
+            product.Rating = new_rating
+            product.save()  # Save the updated rating in the database
+    return redirect('product_detail', serial_no=serial_no)
+
+def review_detail_view(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    return render(request, 'review_detail.html', {'review': review})
+
+# def product_detail(request, serial_no):
+#     product = get_object_or_404(ClothingItem, Serial_no=serial_no)
+
+
+#     return render(request, 'product_detail.html', {'product': product})
 
 def home(request):
     return render(request, 'homepage.html')
