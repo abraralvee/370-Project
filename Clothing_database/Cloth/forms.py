@@ -1,17 +1,9 @@
 from django import forms
-from .models import User, Renter, Rentee, Delivery_person
 
-class RenteeRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Rentee
-        fields = ['User_ID', 'NID', 'Shipping_address', 'Email']
+class BkashTransactionForm(forms.Form):
+    phone_number = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'placeholder': 'Phone Number'}))
+    transaction_id = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Transaction ID'}))
 
-class RenterRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Renter
-        fields = ['User_ID', 'SSN', 'Rating', 'Address', 'Email']
-
-class DeliveryPersonRegistrationForm(forms.ModelForm):
-    class Meta:
-        model = Delivery_person
-        fields = ['User_ID', 'Serial_ID']
+class NagadTransactionForm(forms.Form):
+    phone_number = forms.CharField(max_length=15, widget=forms.TextInput(attrs={'placeholder': 'Phone Number'}))
+    transaction_id = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Transaction ID'}))               

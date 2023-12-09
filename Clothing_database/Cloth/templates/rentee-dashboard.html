@@ -73,17 +73,15 @@
             border: none;
             border-radius: 3px;
             cursor: pointer;
-            text-decoration: none; /* Add this line for consistent styling */
+            text-decoration: none;
         }
 
         .button:hover {
             background-color: rgba(56, 142, 60, 0.91);
         }
 
-        /* Media Queries for Responsive Design */
         @media only screen and (max-width: 600px) {
-            /* Add styles for smaller screens */
-            /* Adjust font sizes, margins, or other styles for better readability on small screens */
+            
         }
     </style>
 </head>
@@ -95,59 +93,21 @@
 
     <nav>
         <ul>
-            <li><a href="{% url 'rentee'  %}">Home</a></li>
+            <li><a href="{% url 'rentee_home' user_id=user_id %}">Home</a></li>
             <li><a href="#profile">Profile</a></li>
-            <li><a href="#rent-history">Rent History</a></li>
-            <li><a href="#favorite-items">Favorite Items</a></li>
-            <li><a href="#notifications">Notifications</a></li>
-            <li><a href="#logout" class="button">Logout</a></li>
+            <li><a href="{% url 'rentee' %}" class="button">Browse by Type</a></li>
         </ul>
     </nav>
 
     <section id="profile">
         <h2>Profile</h2>
         <div class="item">
-            <!-- Display Rentee's profile information -->
             <p>Name: {{user_name}}</p>
             <p>Email: {{user_email}}</p>
             <p>UserID: {{user_id}}</p>
             <p>Shipping Address: {{user_address}}</p>
         </div>
         <a href="{% url 'edit_profile' user_id=user_id %}" class="button">Edit Profile</a>
-    </section>
-
-    <section id="rent-history">
-        <h2>Rent History</h2>
-        <!-- Display a list of past rented items and their details -->
-        <div class="item">
-            <p>Item Name: Blue Casual Shirt</p>
-            <p>Size: L</p>
-            <p>Rental Period: 5 days</p>
-            <p>Rental Date: 2023-12-15</p>
-            <p>Return Date: 2023-12-20</p>
-        </div>
-        <!-- Add more rent history items as needed -->
-    </section>
-
-    <section id="favorite-items">
-        <h2>Favorite Items</h2>
-        <!-- Display a list of items marked as favorites by the Rentee -->
-        <div class="item">
-            <p>Item Name: Trendy Sunglasses</p>
-            <p>Category: Accessories</p>
-            <p>Size: One Size</p>
-            <p>Price: $15.99</p>
-        </div>
-        <!-- Add more favorite items as needed -->
-    </section>
-
-    <section id="notifications">
-        <h2>Notifications</h2>
-        <!-- Display any notifications or alerts for the Rentee -->
-        <div class="item">
-            <p><strong>Alert:</strong> Your favorite item "Trendy Sunglasses" is back in stock!</p>
-        </div>
-        <!-- Add more notifications as needed -->
     </section>
 </body>
 

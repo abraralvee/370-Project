@@ -183,21 +183,33 @@
     </style>
 </head>
 
+
 <body class="">
 
     <div class="container">
         <header>
             <h1>Your Shopping Cart</h1>
             <div class="shopping">
-                <img src="{% static 'images/shopping.svg' %}">
+                <img src="{% static 'images/pic1.jpg' %}">
 
                 <!-- <img src="image/shopping.svg"> -->
                 <span class="quantity">0</span>
             </div>
         </header>
-
         <div class="list">
+            <!-- Iterating over products -->
+            {% for product in Cart %}
+            <div class="item">
+                <img src="{{ product.image }}" alt="{{ product.name }}">
+                <div class="title">{{ product.name }}</div>
+                <div class="price">{{ product.price }}</div>
+                <button onclick="addToCard('{{ product.id }}')">Add To Cart</button>
+            </div>
+            {% endfor %}
         </div>
+
+        <!-- <div class="list">
+        </div> -->
     </div>
     <div class="card">
         <h1>Transaction</h1>
@@ -210,7 +222,69 @@
             <div class="closeShopping">Close</div>
         </div>
     </div>
+    <!-- <div class="listCard">
+        {% csrf_token %}
+        {% for item in cart_items %}
+            <li>
+                <div><img src="{% static item.item.Image %}" alt="{{ item.item.Type }}"/></div>
+                <div>{{ item.item.Type }}</div>
+                <div>{{ item.quantity }}</div>
+                <div>{{ item.total_price }}</div>
+                Add buttons for removing or changing quantity -->
+            <!-- </li> -->
+        <!-- {% endfor %}
+        <div>Total Price: {{ total_price }}</div> -->
+    {% for product in products %}
+     <div>
+        <p>{{ product.column_name_1 }}</p>
+        <p>{{ product.column_name_2 }}</p>
+        <!-- Display other product details -->
+     </div>
+    {% endfor %}
+    </div>
+    <script>
+        // Example function to change the quantity of an item in the cart
+        function changeQuantity(itemId, newQuantity) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        
+            fetch('/change_cart_quantity/', {  // Change to your Django URL for updating cart quantity
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    item_id: itemId,
+                    quantity: newQuantity,
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Update your frontend accordingly
+                if (data.status === 'success') {
+                    // Update the item quantity on the page
+                    document.querySelector(#item-${itemId}-quantity).innerText = newQuantity;
+                    // Update the total price on the page
+                    document.querySelector('.total-price').innerText = data.new_total_price;
+                } else {
+                    alert('Could not update the cart.');
+                }
+            });
+        }
+        </script>
 
+<script type="text/javascript">
+    // Define the static paths as JavaScript variables
+    var imagePaths = {
+        'pic1': "{% static 'images/pic1.jpg' %}",
+        '2': "{% static 'images/pic2.jpg' %}",
+        '3': "{% static 'images/pic3.jpg' %}",
+        '4': "{% static 'images/pic4.jpg' %}",
+        '5': "{% static 'images/pic5.jpeg' %}",
+        '6': "{% static 'images/pic6.jpg' %}",
+    };
+    </script>
+        
     <script>
         let openShopping = document.querySelector('.shopping');
         let closeShopping = document.querySelector('.closeShopping');
@@ -234,21 +308,22 @@
         let products = [
             {
                 id: 1,
-                name: 'PRODUCT NAME 1',
-                image: 'pic1.jpg',
-                price: 120000
+                name: 'Cozy knit Sweater',
+                image: imagePaths.pic1,
+                price: 300
+                
             },
             {
                 id: 2,
-                name: 'PRODUCT NAME 2',
+                name: 'Elegant Evening Gown',
                 image: '2.PNG',
-                price: 120000
+                price: 600
             },
             {
                 id: 3,
-                name: 'PRODUCT NAME 3',
+                name: 'classic cotton T-shirt',
                 image: '3.PNG',
-                price: 220000
+                price: 559
             },
             {
                 id: 4,

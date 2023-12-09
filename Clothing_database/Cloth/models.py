@@ -47,11 +47,8 @@ class ClothingItem(models.Model):
 
 class Cart(models.Model):
     Cart_number = models.IntegerField(primary_key=True)
-    Voucher = models.CharField(max_length=10)
-    Daily_charge= models.DecimalField(max_digits=10, decimal_places=2)
-    Delivery_charge = models.DecimalField(max_digits=10, decimal_places=2)
-    Duration = models.DurationField()
-    Product_price = models.DecimalField(max_digits=10, decimal_places=2)
+    User_ID = models.CharField(max_length=50)
+    Product_id = models.IntegerField()
 
 class Transaction(models.Model):
     Transaction_iD = models.CharField(max_length=12, primary_key=True)

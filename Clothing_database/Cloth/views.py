@@ -7,6 +7,8 @@ from django.core.files.storage import default_storage
 from .models import ClothingItem, Review
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseServerError
+from django.http import JsonResponse
+from .models import ClothingItem, Cart, User
 
 def register_rentee(request):
     if request.method == "POST":
@@ -343,27 +345,27 @@ def edit_profile(request, user_id):
 
 from .models import User
 
-def rentee_home(request, user_id):
-    try:
-        user_profile = User.objects.get(User_ID=user_id)
-    except User.DoesNotExist:
-        return HttpResponse("User not found", status=404)
+# def rentee_home(request, user_id):
+#     try:
+#         user_profile = User.objects.get(User_ID=user_id)
+#     except User.DoesNotExist:
+#         return HttpResponse("User not found", status=404)
 
-    products = ClothingItem.objects.all()
-    for product in products:
-        product.star_range = range(int(product.Rating or 0))
+#     products = ClothingItem.objects.all()
+#     for product in products:
+#         product.star_range = range(int(product.Rating or 0))
 
-    context = {
-        'user_info': {
-            'user_id': user_profile.User_ID,
-            'user_first_name': user_profile.First_name,
-            'user_last_name': user_profile.Last_name,
-            'user_phone_number': user_profile.Phone_number,
-        },
-        'products': products,
-    }
+#     context = {
+#         'user_info': {
+#             'user_id': user_profile.User_ID,
+#             'user_first_name': user_profile.First_name,
+#             'user_last_name': user_profile.Last_name,
+#             'user_phone_number': user_profile.Phone_number,
+#         },
+#         'products': products,
+#     }
 
-    return render(request, 'rentee_home.html', context)
+#     return render(request, 'rentee_home.html', context)
 
 def delete_rented_item(request, serial_no):
     rented_item = get_object_or_404(ClothingItem, Serial_no=serial_no)
@@ -458,8 +460,33 @@ def rentee_dashboard(request):
 def dp_dashboard(request):
     return render(request, 'dp-dashboard.html')
 
-def cart(request):
-    return render (request,'cart.html')
+
+def rentee_home(request, user_id):
+    try:
+        user_profile = User.objects.get(User_ID=user_id)
+    except User.DoesNotExist:
+       return HttpResponse("/cart/")
+
+    products = ClothingItem.objects.all()
+    for product in products:
+        product.star_range = range(int(product.Rating or 0))
+
+    context = {
+        'user_info': {
+            'user_id': user_profile.User_ID,
+            'user_first_name': user_profile.First_name,
+            'user_last_name': user_profile.Last_name,
+            'user_phone_number': user_profile.Phone_number,
+        },
+        'products': products,
+    }
+    
+
+    return render(request, 'rentee_home.html', context)
+
+
+
+
 
 def checkout(request):
     return render(request, 'credit_card.html')
@@ -469,4 +496,72 @@ def payment_method(request):
 
 def order_placed(request):
     return render(request, 'order_placed.html')
+def cart(request, user_id):
+    # try:
+    #     user_profile = User.objects.get(User_ID=user_id)
+    #     cart_items = Cart.objects.filter(user=user_profile)
+    #     # If you have a function that calculates the total price of the cart
+    #     total_price = sum([item.total_price for item in cart_items])
+    # except User.DoesNotExist:
+    #     return HttpResponse('User does not exist')
 
+    
+    product_query = 'SELECT * FROM cloth_cart WHERE user_id = %s'
+    
+    with connection.cursor() as cursor:
+        cursor.execute(product_query, [user_id])
+        items = cursor.fetchall()  # Fetches all rows from the last executed statement
+    products = []
+    for item in items:
+        product = {
+            'column_name_1': item[0],
+            'column_name_2': item[1],
+            
+        }
+        products.append(product)
+
+    return render(request, 'cart.html', {'products': products})
+
+
+def add_to_cart(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        serial_no = request.POST.get('serial_no')
+        
+        print(user_id)
+        print(serial_no)
+        find_user = "SELECT Cart_number FROM cloth_cart"
+        insert_cloth = 'INSERT INTO cloth_cart (Cart_number,User_ID, Product_id) VALUES (%s, %s,%s)'
+
+        with connection.cursor() as cursor:
+                obj = User.objects.get(pk=user_id)
+                cart_no = cursor.execute(find_user) + 20
+                print(cart_no) 
+                cursor.execute(insert_cloth, (cart_no,obj,serial_no))
+                
+    
+
+        return JsonResponse({'success': True, 'quantity': 'DONE'})
+    return JsonResponse({'success': False})
+
+    
+from .forms import BkashTransactionForm
+
+def bkash_transaction(request):
+    if request.method == 'POST':
+        form = BkashTransactionForm(request.POST)
+        if form.is_valid():
+            return  redirect(order_placed)  # Redirect to a new URL after processing
+    else:
+        form = BkashTransactionForm()
+
+    return render(request, 'bkash-transaction.html', {'form': form})
+def nagad_transaction(request):
+    if request.method == 'POST':
+        form = BkashTransactionForm(request.POST)
+        if form.is_valid():
+            return  HttpResponse('Transaction Succesful')  # Redirect to a new URL after processing
+    else:
+        form = BkashTransactionForm()
+
+    return render(request, 'nagad_transaction.html', {'form': form})
