@@ -75,17 +75,17 @@
     color: #fff;
     width: 100%;
     padding: 10px;
-    transition: background-color 0.3s, color 0.3s; /* Add transition effect */
+    transition: background-color 0.3s, color 0.3s; 
 }
 
 .list .item button:hover {
-    background-color: #b8d8ba; /* Change background color on hover */
-    color: #1C1F25; /* Change text color on hover */
+    background-color: #b8d8ba; 
+    color: #1C1F25; 
 }
 
 .list .item button:active {
-    background-color: rgb(167, 233, 224); /* Change background color on click */
-    color: #1C1F25; /* Change text color on click */
+    background-color: rgb(167, 233, 224); 
+    color: #1C1F25; 
 }
 
         .list .item .title {
@@ -192,12 +192,10 @@
             <div class="shopping">
                 <img src="{% static 'images/pic1.jpg' %}">
 
-                <!-- <img src="image/shopping.svg"> -->
                 <span class="quantity">0</span>
             </div>
         </header>
         <div class="list">
-            <!-- Iterating over products -->
             {% for product in Cart %}
             <div class="item">
                 <img src="{{ product.image }}" alt="{{ product.name }}">
@@ -208,46 +206,30 @@
             {% endfor %}
         </div>
 
-        <!-- <div class="list">
-        </div> -->
     </div>
     <div class="card">
         <h1>Transaction</h1>
         <ul class="listCard">
         </ul>
         <div class="checkOut">
-        <!-- <a href='../choose-payment-method'></a> -->
             
-            <div><a href='../choose-payment-method' class="total">0</a></div>
+            <div><a href='../transaction' class="total">0</a></div>
             <div class="closeShopping">Close</div>
         </div>
     </div>
-    <!-- <div class="listCard">
-        {% csrf_token %}
-        {% for item in cart_items %}
-            <li>
-                <div><img src="{% static item.item.Image %}" alt="{{ item.item.Type }}"/></div>
-                <div>{{ item.item.Type }}</div>
-                <div>{{ item.quantity }}</div>
-                <div>{{ item.total_price }}</div>
-                Add buttons for removing or changing quantity -->
-            <!-- </li> -->
-        <!-- {% endfor %}
-        <div>Total Price: {{ total_price }}</div> -->
+
     {% for product in products %}
      <div>
         <p>{{ product.column_name_1 }}</p>
         <p>{{ product.column_name_2 }}</p>
-        <!-- Display other product details -->
      </div>
     {% endfor %}
     </div>
     <script>
-        // Example function to change the quantity of an item in the cart
         function changeQuantity(itemId, newQuantity) {
             const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
         
-            fetch('/change_cart_quantity/', {  // Change to your Django URL for updating cart quantity
+            fetch('/change_cart_quantity/', {  
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': csrfToken,
@@ -260,11 +242,11 @@
             })
             .then(response => response.json())
             .then(data => {
-                // Update your frontend accordingly
+                
                 if (data.status === 'success') {
-                    // Update the item quantity on the page
+                    
                     document.querySelector(#item-${itemId}-quantity).innerText = newQuantity;
-                    // Update the total price on the page
+                    
                     document.querySelector('.total-price').innerText = data.new_total_price;
                 } else {
                     alert('Could not update the cart.');
@@ -274,7 +256,7 @@
         </script>
 
 <script type="text/javascript">
-    // Define the static paths as JavaScript variables
+    
     var imagePaths = {
         'pic1': "{% static 'images/pic1.jpg' %}",
         '2': "{% static 'images/pic2.jpg' %}",
@@ -295,7 +277,6 @@
         let quantity = document.querySelector('.quantity');
         let imagePath = "{% static 'cloth/images/pic1.jpg' %}";
 
-        // Now, imagePath will contain the correct path to your image
         console.log(imagePath);
 
         openShopping.addEventListener('click', () => {

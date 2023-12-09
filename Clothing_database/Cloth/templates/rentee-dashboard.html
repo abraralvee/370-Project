@@ -108,6 +108,7 @@
             <p>Shipping Address: {{user_address}}</p>
         </div>
         <a href="{% url 'edit_profile' user_id=user_id %}" class="button">Edit Profile</a>
+        <a href="{% url 'delete_profile' user_id=user_id %}" class="button">Delete Profile</a>
     </section>
 </body>
 

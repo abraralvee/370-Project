@@ -249,7 +249,7 @@ def product(request, user_id):
                 existing_product = cursor.fetchone()
 
             if existing_product:
-                messages.warning(request, 'Product with the same serial number already exists.')
+                # messages.warning(request, 'Product with the same serial number already exists.')
                 return render(request, 'product.html', context)
 
             if 'cloth_image' in request.FILES:
@@ -265,7 +265,7 @@ def product(request, user_id):
             with connection.cursor() as cursor:
                 cursor.execute(insert_product_query, [serial_no, clothing_type, condition, size, category, rent_status, gender, image_path, price, renter_id])
 
-            messages.success(request, 'Product added successfully.')
+            # messages.success(request, 'Product added successfully.')
             return redirect('product_detail', serial_no=serial_no)
 
         except Exception as e:
@@ -275,40 +275,6 @@ def product(request, user_id):
     return render(request, 'product.html', context)
 
 
-# def view_cloth(request, serial_no):
-#     if request.method == 'GET':
-#         select_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
-#         with connection.cursor() as cursor:
-#             cursor.execute(select_query, [serial_no])
-#             row = cursor.fetchone()
-#             print(row)
-
-#         if not row:
-#             return render(request, 'homepage.html')
-
-#         clothing_item = {
-#             'Serial_no': row[0],
-#             'Type': row[1],
-#             'Condition': row[2],
-#             'Size': row[3],
-#             'Category': row[4],
-#             'Rent_status': row[5],
-#             'Gender': row[6],
-#             'Image': row[7],
-#             'Price': row[8],
-#             'renter_id_id':row[10]
-#         }
-
-#         context = {
-#             'clothing_item': clothing_item,
-#         }
-
-#         return render(request, 'view_cloth.html', context)
-
-#     elif request.method == 'POST':
-#         return HttpResponse("This is a POST request.")
-
-#     return HttpResponse("Unsupported request method.")
 
 def edit_profile(request, user_id):
     if request.method == 'POST':
@@ -345,28 +311,6 @@ def edit_profile(request, user_id):
 
 from .models import User
 
-# def rentee_home(request, user_id):
-#     try:
-#         user_profile = User.objects.get(User_ID=user_id)
-#     except User.DoesNotExist:
-#         return HttpResponse("User not found", status=404)
-
-#     products = ClothingItem.objects.all()
-#     for product in products:
-#         product.star_range = range(int(product.Rating or 0))
-
-#     context = {
-#         'user_info': {
-#             'user_id': user_profile.User_ID,
-#             'user_first_name': user_profile.First_name,
-#             'user_last_name': user_profile.Last_name,
-#             'user_phone_number': user_profile.Phone_number,
-#         },
-#         'products': products,
-#     }
-
-#     return render(request, 'rentee_home.html', context)
-
 def delete_rented_item(request, serial_no):
     rented_item = get_object_or_404(ClothingItem, Serial_no=serial_no)
     user_id= rented_item.renter_id_id
@@ -376,8 +320,20 @@ def delete_rented_item(request, serial_no):
 
     return redirect('dashboard', user_id)
 
+from .models import Renter, Rentee, Delivery_person, User
 def delete_profile(request, user_id):
-    return render(request,'delete_profile.html',{'user_id':user_id})
+    user_type = user_id[:2]
+
+    # if user_type == '01':
+    #     model_class = Renter
+    # elif user_type == '02':
+    #     model_class = Rentee
+    # elif user_type == '03':
+    #     model_class = Delivery_person
+    # user = get_object_or_404(User, User_ID=user_id)
+    # user.delete()
+
+    # return render(request,'delete_profile.html',{'user_id':user_id})
 
 #ALVEE
 
@@ -422,9 +378,10 @@ def submit_comment(request, serial_no):
 
         return redirect('review_detail', review_id=review.id)
     if 'redirect_to_review' in request.GET:
-        return redirect('review_detail', review_id=review.id)
+        return redirect('review_detail', review_id=review.id, submitted=True)
 
     return redirect('product_detail', serial_no=serial_no)
+
 
 def submit_rating(request, serial_no):
     if request.method == 'POST':
@@ -492,7 +449,7 @@ def checkout(request):
     return render(request, 'credit_card.html')
 
 def payment_method(request):
-    return render(request, 'transaction.html')
+    return render(request, 'payment_method.html')
 
 def order_placed(request):
     return render(request, 'order_placed.html')
@@ -528,8 +485,6 @@ def add_to_cart(request):
         user_id = request.POST.get('user_id')
         serial_no = request.POST.get('serial_no')
         
-        print(user_id)
-        print(serial_no)
         find_user = "SELECT Cart_number FROM cloth_cart"
         insert_cloth = 'INSERT INTO cloth_cart (Cart_number,User_ID, Product_id) VALUES (%s, %s,%s)'
 
