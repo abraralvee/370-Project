@@ -10,6 +10,23 @@ from django.http import HttpResponseServerError
 from django.http import JsonResponse
 from .models import ClothingItem, Cart, User
 
+# Maisha Tasnim- 21201117
+# Maisha Tasnim- 21201117
+# Maisha Tasnim- 21201117
+# Maisha Tasnim- 21201117
+
+def home(request):
+    return render(request, 'homepage.html')
+
+def renter_dashboard(request):
+    return render(request, 'renter-dashboard.html')
+
+def rentee_dashboard(request):
+    return render(request, 'rentee-dashboard.html')
+
+def dp_dashboard(request):
+    return render(request, 'dp-dashboard.html')
+
 def register_rentee(request):
     if request.method == "POST":
         first_name = request.POST['first_name']
@@ -151,7 +168,6 @@ def dashboard(request, user_id):
 
         cursor.execute(info_query, [user_id])
         user_specific_data = cursor.fetchone()
-        # print(user_specific_data)
 
         if user_specific_data:
             if user_type == 'renter':
@@ -228,52 +244,6 @@ def login_view(request):
             
     return render(request, 'login.html')
 
-def product(request, user_id):
-    renter_id= user_id
-    context = {'user_id': user_id}
-
-    if request.method == 'POST':
-        try:
-            serial_no = request.POST['serial_no']
-            clothing_type = request.POST['type']
-            condition = request.POST['condition']
-            size = request.POST['size']
-            category = request.POST['category']
-            rent_status = request.POST['rent_status']
-            gender = request.POST['gender']
-            price = request.POST['price']
-            
-            find_product_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
-            with connection.cursor() as cursor:
-                cursor.execute(find_product_query, [serial_no])
-                existing_product = cursor.fetchone()
-
-            if existing_product:
-                # messages.warning(request, 'Product with the same serial number already exists.')
-                return render(request, 'product.html', context)
-
-            if 'cloth_image' in request.FILES:
-                image = request.FILES['cloth_image']
-                image_path = default_storage.save(f"{image}", image)
-            else:
-                image_path = None
-
-            insert_product_query = """
-            INSERT INTO cloth_ClothingItem (Serial_no, Type, `Condition`, Size, Category, Rent_status, Gender, Image, Price, renter_id_id)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            """
-            with connection.cursor() as cursor:
-                cursor.execute(insert_product_query, [serial_no, clothing_type, condition, size, category, rent_status, gender, image_path, price, renter_id])
-
-            # messages.success(request, 'Product added successfully.')
-            return redirect('product_detail', serial_no=serial_no)
-
-        except Exception as e:
-            messages.error(request, f'Error adding product: {e}')
-            return HttpResponseServerError(f'Internal Server Error: {e}')
-
-    return render(request, 'product.html', context)
-
 
 
 def edit_profile(request, user_id):
@@ -321,31 +291,102 @@ def delete_rented_item(request, serial_no):
     return redirect('dashboard', user_id)
 
 from .models import Renter, Rentee, Delivery_person, User
+
 def delete_profile(request, user_id):
     user_type = user_id[:2]
 
-    # if user_type == '01':
-    #     model_class = Renter
-    # elif user_type == '02':
-    #     model_class = Rentee
-    # elif user_type == '03':
-    #     model_class = Delivery_person
-    # user = get_object_or_404(User, User_ID=user_id)
-    # user.delete()
+    if user_type == '01':
+        model_class = Renter
+    elif user_type == '02':
+        model_class = Rentee
+    elif user_type == '03':
+        model_class = Delivery_person
 
-    # return render(request,'delete_profile.html',{'user_id':user_id})
+    try:
+        if user_type == '01':
+            rented_items = ClothingItem.objects.filter(renter_id_id=user_id, Rent_status='rented')
+            if rented_items.exists():
+                messages.error(request, "You cannot delete your account because you have rented items.")
+                return redirect('dashboard', user_id)
 
-#ALVEE
+        user_instance = get_object_or_404(model_class, User_ID_id=user_id)
+        user_instance.delete()
+
+    except model_class.DoesNotExist:
+        return redirect('/')  
+
+    try:
+        user = get_object_or_404(User, User_ID=user_id)
+        user.delete()
+        messages.success(request, "Account deleted successfully.")
+        return redirect('/')
+    except User.DoesNotExist:
+        return redirect('/')
+
+
+
+
+
+
+#Abrar Jahin Alvee- 21201226
+#Abrar Jahin Alvee- 21201226
+#Abrar Jahin Alvee- 21201226
+#Abrar Jahin Alvee- 21201226
+
+
+def product(request, user_id):
+    renter_id= user_id
+    context = {'user_id': user_id}
+
+    if request.method == 'POST':
+        try:
+            serial_no = request.POST['serial_no']
+            clothing_type = request.POST['type']
+            condition = request.POST['condition']
+            size = request.POST['size']
+            category = request.POST['category']
+            rent_status = request.POST['rent_status']
+            gender = request.POST['gender']
+            price = request.POST['price']
+            
+            find_product_query = "SELECT * FROM cloth_clothingitem WHERE Serial_no = %s"
+            with connection.cursor() as cursor:
+                cursor.execute(find_product_query, [serial_no])
+                existing_product = cursor.fetchone()
+
+            if existing_product:
+                messages.warning(request, 'Product with the same serial number already exists.')
+                return render(request, 'product.html', context)
+
+            if 'cloth_image' in request.FILES:
+                image = request.FILES['cloth_image']
+                image_path = default_storage.save(f"{image}", image)
+            else:
+                image_path = None
+
+            insert_product_query = """
+            INSERT INTO cloth_ClothingItem (Serial_no, Type, `Condition`, Size, Category, Rent_status, Gender, Image, Price, renter_id_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            with connection.cursor() as cursor:
+                cursor.execute(insert_product_query, [serial_no, clothing_type, condition, size, category, rent_status, gender, image_path, price, renter_id])
+
+            messages.success(request, 'Product added successfully.')
+            return redirect('product_detail', serial_no=serial_no)
+
+        except Exception as e:
+            messages.error(request, f'Error adding product: {e}')
+            return HttpResponseServerError(f'Internal Server Error: {e}')
+
+    return render(request, 'product.html', context)
 
 def rentee(request):
     search_query = request.GET.get('search_query', '')
     category_query = request.GET.get('Category')
 
     if search_query:
-
         item_data = ClothingItem.objects.filter(Type__icontains=search_query)
     elif category_query:
-
         item_data = ClothingItem.objects.filter(Category__icontains=category_query)
     else:
         item_data = ClothingItem.objects.all()
@@ -373,15 +414,12 @@ def submit_comment(request, serial_no):
         rating = request.POST.get('rating')
 
         clothing_item = ClothingItem.objects.get(Serial_no=serial_no)
-        # rating= clothing_item.Rating.all()
         review = Review.objects.create(Serial_no_id=serial_no, Reviews=new_comment)
 
         return redirect('review_detail', review_id=review.id)
     if 'redirect_to_review' in request.GET:
         return redirect('review_detail', review_id=review.id, submitted=True)
-
     return redirect('product_detail', serial_no=serial_no)
-
 
 def submit_rating(request, serial_no):
     if request.method == 'POST':
@@ -389,33 +427,12 @@ def submit_rating(request, serial_no):
         if 1 <= new_rating <= 5:
             product = get_object_or_404(ClothingItem, Serial_no=serial_no)
             product.Rating = new_rating
-            product.save()  # Save the updated rating in the database
+            product.save() 
     return redirect('product_detail', serial_no=serial_no)
 
 def review_detail_view(request, review_id):
     review = get_object_or_404(Review, id=review_id)
     return render(request, 'review_detail.html', {'review': review})
-
-# def product_detail(request, serial_no):
-#     product = get_object_or_404(ClothingItem, Serial_no=serial_no)
-
-
-#     return render(request, 'product_detail.html', {'product': product})
-
-def home(request):
-    return render(request, 'homepage.html')
-
-def index(request):
-    return render(request, 'index.html')
-
-def renter_dashboard(request):
-    return render(request, 'renter-dashboard.html')
-
-def rentee_dashboard(request):
-    return render(request, 'rentee-dashboard.html')
-
-def dp_dashboard(request):
-    return render(request, 'dp-dashboard.html')
 
 
 def rentee_home(request, user_id):
@@ -437,12 +454,20 @@ def rentee_home(request, user_id):
         },
         'products': products,
     }
-    
-
     return render(request, 'rentee_home.html', context)
 
 
 
+
+
+
+
+
+
+# Fairuz Binte Khaled- 22101664
+# Fairuz Binte Khaled- 22101664
+# Fairuz Binte Khaled- 22101664
+# Fairuz Binte Khaled- 22101664
 
 
 def checkout(request):
@@ -453,21 +478,13 @@ def payment_method(request):
 
 def order_placed(request):
     return render(request, 'order_placed.html')
-def cart(request, user_id):
-    # try:
-    #     user_profile = User.objects.get(User_ID=user_id)
-    #     cart_items = Cart.objects.filter(user=user_profile)
-    #     # If you have a function that calculates the total price of the cart
-    #     total_price = sum([item.total_price for item in cart_items])
-    # except User.DoesNotExist:
-    #     return HttpResponse('User does not exist')
 
-    
+def cart(request, user_id):
     product_query = 'SELECT * FROM cloth_cart WHERE user_id = %s'
     
     with connection.cursor() as cursor:
         cursor.execute(product_query, [user_id])
-        items = cursor.fetchall()  # Fetches all rows from the last executed statement
+        items = cursor.fetchall() 
     products = []
     for item in items:
         product = {
@@ -506,7 +523,7 @@ def bkash_transaction(request):
     if request.method == 'POST':
         form = BkashTransactionForm(request.POST)
         if form.is_valid():
-            return  redirect(order_placed)  # Redirect to a new URL after processing
+            return  redirect(order_placed)  
     else:
         form = BkashTransactionForm()
 
@@ -515,7 +532,7 @@ def nagad_transaction(request):
     if request.method == 'POST':
         form = BkashTransactionForm(request.POST)
         if form.is_valid():
-            return  HttpResponse('Transaction Succesful')  # Redirect to a new URL after processing
+            return  HttpResponse('Transaction Succesful')  
     else:
         form = BkashTransactionForm()
 

@@ -32,7 +32,7 @@
             font-family: 'Quicksand', sans-serif;
         }
 
-        /* Updated Navigation Styles */
+    
         nav ul {
             list-style-type: none;
             margin: 0;
@@ -80,10 +80,8 @@
             background-color: rgba(56, 142, 60, 0.91);
         }
 
-        /* Media Queries for Responsive Design */
         @media only screen and (max-width: 600px) {
-            /* Add styles for smaller screens */
-            /* Adjust font sizes, margins, or other styles for better readability on small screens */
+ 
         }
     </style>
 </head>
@@ -93,7 +91,7 @@
         <h1>Welcome {{user_name}}</h1>
     </header>
 
-    <!-- Updated Navigation -->
+
     <nav>
         <ul>
             <li><a href="#profile">Profile</a></li>
@@ -107,7 +105,6 @@
     <section id="profile">
         <h2>Profile</h2>
         <div class="item">
-            <!-- Display Delivery Person's profile information -->
             <p>Name: {{user_name}}</p>
             <p>User ID: {{user_id}}</p>
         </div>
@@ -116,7 +113,6 @@
 
     <section id="deliveries">
         <h2>Deliveries</h2>
-        <!-- Display a list of ongoing deliveries and their details -->
         <div class="item">
             <p>Delivery ID: 001</p>
             <p>Recipient: John Doe</p>
@@ -124,28 +120,24 @@
             <p>Delivery Status: In Progress</p>
             <a href="#complete-delivery" class="button">Complete Delivery</a>
         </div>
-        <!-- Add more ongoing deliveries as needed -->
     </section>
 
     <section id="history">
         <h2>Delivery History</h2>
-        <!-- Display a list of past deliveries and their details -->
         <div class="item">
             <p>Delivery ID: 002</p>
             <p>Recipient: Jane Doe</p>
             <p>Address: 456 Oak St</p>
             <p>Delivery Status: Completed</p>
         </div>
-        <!-- Add more delivery history items as needed -->
     </section>
 
     <section id="notifications">
         <h2>Notifications</h2>
-        <!-- Display any notifications or alerts for the Delivery Person -->
         <div class="item">
             <p><strong>Note:</strong> New delivery assignment received.</p>
         </div>
-        <!-- Add more notifications as needed -->
+        
     </section>
 </body>
 

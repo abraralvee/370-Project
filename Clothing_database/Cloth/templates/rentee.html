@@ -108,7 +108,7 @@
     </form>
 
     <div id="product-list">
-        <!-- Dummy Products for Testing -->
+        
         {% for item_with_images in item_data_with_images %}
             <div class="product-container">
                 <div class="product-type">{{ item_with_images.item.Type }}</div>
@@ -116,7 +116,7 @@
                 <div class="product-info">
                     <p>Condition: {{ item_with_images.item.Condition }}</p>
                     <p>Size: {{ item_with_images.item.Size }}</p>
-                    <!-- Add other relevant information as needed -->
+                    
                     {% if item_with_images.images %}
                         <img src="{{ item_with_images.images.url }}" alt="Item Image">
                     {% endif %}

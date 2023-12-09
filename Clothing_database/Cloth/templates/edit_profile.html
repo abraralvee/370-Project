@@ -65,10 +65,9 @@
             background-color: rgba(56, 142, 60, 0.91);
         }
 
-        /* Media Queries for Responsive Design */
+
         @media only screen and (max-width: 600px) {
-            /* Add styles for smaller screens */
-            /* Adjust font sizes, margins, or other styles for better readability on small screens */
+ 
         }
     </style>
 </head>
@@ -82,7 +81,6 @@
         <form action="{% url 'edit_profile' user_id=user_id %}" method="POST" id="editProfileForm">
 
             {% csrf_token %}
-            <!-- Add input fields for editing profile information -->
             <label for="new_first_name">New First Name:</label>
             <input type="text" id="new_first_name" name="new_first_name" value="{{ user_first_name }}" required>
 
